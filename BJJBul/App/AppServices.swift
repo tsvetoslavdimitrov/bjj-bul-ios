@@ -14,6 +14,16 @@ final class AppServices {
         self.users = users
     }
 
+    /// Uses Supabase when Secrets.xcconfig is configured, otherwise falls back to mocks.
+    static let live: AppServices = {
+        guard let client = SupabaseConfig.makeClient() else { return mock }
+        return AppServices(
+            gyms: SupabaseGymService(client: client),
+            coaches: SupabaseCoachService(client: client),
+            users: MockUserService()
+        )
+    }()
+
     static let mock = AppServices(
         gyms: MockGymService(),
         coaches: MockCoachService(),

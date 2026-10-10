@@ -2,7 +2,7 @@ import SwiftUI
 
 @main
 struct BJJBulApp: App {
-    private let services = AppServices.mock
+    private let services = AppServices.live
 
     var body: some Scene {
         WindowGroup {

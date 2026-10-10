@@ -9,6 +9,7 @@ SwiftUI · iOS 17+ · MVVM · MapKit · Supabase (planned; mocks for now) · Xco
 
 ## Setup
 ```bash
+cp Config/Secrets.example.xcconfig Config/Secrets.xcconfig   # fill in Supabase URL + publishable key
 brew install xcodegen && xcodegen
 open BJJBul.xcodeproj
 ```

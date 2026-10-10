@@ -1,6 +1,6 @@
 -- BJJ Bul: initial schema
-create extension if not exists postgis;
-create extension if not exists pgcrypto;
+create extension if not exists postgis with schema extensions;
+create extension if not exists pgcrypto with schema extensions;
 
 -- Enums
 create type belt as enum ('white','blue','purple','brown','black','coral','red');
