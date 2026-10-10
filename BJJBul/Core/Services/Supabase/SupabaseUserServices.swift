@@ -1,0 +1,107 @@
+import Foundation
+import Supabase
+
+struct SupabaseAuthService: AuthService {
+    let client: SupabaseClient
+
+    func currentUserId() async -> UUID? {
+        do {
+            let session = try await client.auth.session
+            return session.user.id
+        } catch {
+            return nil
+        }
+    }
+
+    func signInWithApple(idToken: String, nonce: String) async throws {
+        _ = try await client.auth.signInWithIdToken(
+            credentials: OpenIDConnectCredentials(provider: .apple, idToken: idToken, nonce: nonce)
+        )
+    }
+
+    /// Sends a one-time code (and magic link) to the email address.
+    func sendEmailCode(to email: String) async throws {
+        try await client.auth.signInWithOTP(email: email)
+    }
+
+    func verifyEmailCode(email: String, code: String) async throws {
+        _ = try await client.auth.verifyOTP(email: email, token: code, type: .email)
+    }
+
+    func signOut() async throws {
+        try await client.auth.signOut()
+    }
+
+    /// Calls the security-definer RPC from migration 0003, then clears the local session.
+    func deleteAccount() async throws {
+        try await client.rpc("delete_my_account").execute()
+        try? await client.auth.signOut()
+    }
+}
+
+struct SupabaseUserService: UserService {
+    let client: SupabaseClient
+
+    private func userId() async throws -> UUID {
+        let session = try await client.auth.session
+        return session.user.id
+    }
+
+    func currentUser() async throws -> AppUser? {
+        let id = try await userId()
+        let rows: [ProfileRow] = try await client.from("profiles")
+            .select()
+            .eq("id", value: id.uuidString)
+            .limit(1)
+            .execute()
+            .value
+        let favorites = try await favoriteGymIds()
+        if let row = rows.first {
+            return row.toModel(favoriteGymIds: favorites)
+        }
+        return AppUser(id: id, displayName: "", avatarURL: nil, belt: .white, stripes: 0,
+                       homeGymId: nil, trainingSince: nil, locale: "bg",
+                       favoriteGymIds: favorites, isPublic: false, smoothcompProfileURL: nil)
+    }
+
+    func update(_ user: AppUser) async throws {
+        let payload = ProfileUpsert(id: user.id, displayName: user.displayName,
+                                    belt: user.belt.rawValue, stripes: user.stripes,
+                                    homeGymId: user.homeGymId)
+        try await client.from("profiles")
+            .upsert(payload)
+            .execute()
+    }
+
+    func favoriteGymIds() async throws -> [UUID] {
+        let rows: [FavoriteRow] = try await client.from("favorite_gyms")
+            .select("user_id,gym_id")
+            .execute()
+            .value
+        return rows.map { $0.gym_id }
+    }
+
+    func setFavorite(gymId: UUID, isFavorite: Bool) async throws {
+        let id = try await userId()
+        if isFavorite {
+            try await client.from("favorite_gyms")
+                .upsert(FavoriteRow(user_id: id, gym_id: gymId), onConflict: "user_id,gym_id")
+                .execute()
+        } else {
+            try await client.from("favorite_gyms")
+                .delete()
+                .eq("user_id", value: id.uuidString)
+                .eq("gym_id", value: gymId.uuidString)
+                .execute()
+        }
+    }
+
+    func submitSuggestion(entityType: String, entityId: UUID?, message: String) async throws {
+        let id = try await userId()
+        let row = SuggestionInsert(user_id: id, entity_type: entityType, entity_id: entityId,
+                                   payload: ["message": message])
+        try await client.from("suggestions")
+            .insert(row)
+            .execute()
+    }
+}

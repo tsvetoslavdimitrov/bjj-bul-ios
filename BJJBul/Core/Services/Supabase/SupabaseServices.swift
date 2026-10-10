@@ -4,7 +4,7 @@ import Supabase
 struct SupabaseGymService: GymService {
     let client: SupabaseClient
 
-    private let gymColumns = "id,name,name_latin,city_id,address,affiliation,phone,email,website,instagram,facebook,photo_urls,price_drop_in,price_monthly,price_kids,currency,has_kids,has_women_only,verified,owner_user_id,lat,lng"
+    private let gymColumns = "id,name,name_latin,city_id,address,affiliation,phone,email,website,instagram,facebook,photo_urls,price_drop_in,price_monthly,price_kids,currency,has_kids,has_women_only,verified,owner_user_id"
 
     func cities() async throws -> [City] {
         let rows: [CityRow] = try await client.from("cities")
@@ -16,41 +16,18 @@ struct SupabaseGymService: GymService {
     }
 
     func gyms(cityId: UUID?) async throws -> [Gym] {
-        let rows: [GymRow]
-        if let cityId {
-            rows = try await client.from("gyms_with_coords")
-                .select(gymColumns)
-                .eq("city_id", value: cityId.uuidString)
-                .order("name")
-                .execute()
-                .value
-        } else {
-            rows = try await client.from("gyms_with_coords")
-                .select(gymColumns)
-                .order("name")
-                .execute()
-                .value
-        }
+        let rows = try await fetchGyms(cityId: cityId, id: nil)
         return rows.map { $0.toModel() }
     }
 
     /// Only gyms with real coordinates, for map pins.
     func mappableGyms() async throws -> [Gym] {
-        let rows: [GymRow] = try await client.from("gyms_with_coords")
-            .select(gymColumns)
-            .not("lat", operator: .is, value: "null")
-            .execute()
-            .value
-        return rows.map { $0.toModel() }
+        let rows = try await fetchGyms(cityId: nil, id: nil)
+        return rows.filter { $0.hasLocation }.map { $0.toModel() }
     }
 
     func gym(id: UUID) async throws -> Gym? {
-        let rows: [GymRow] = try await client.from("gyms_with_coords")
-            .select(gymColumns)
-            .eq("id", value: id.uuidString)
-            .limit(1)
-            .execute()
-            .value
+        let rows = try await fetchGyms(cityId: nil, id: id)
         return rows.first?.toModel()
     }
 
@@ -64,24 +41,71 @@ struct SupabaseGymService: GymService {
             .value
         return rows.map { $0.toModel() }
     }
+
+    /// Reads the gyms_with_coords view (has lat/lng). If the view is unavailable
+    /// (e.g. PGRST205), falls back to the plain gyms table without coordinates.
+    private func fetchGyms(cityId: UUID?, id: UUID?) async throws -> [GymRow] {
+        do {
+            return try await query(table: "gyms_with_coords", columns: gymColumns + ",lat,lng", cityId: cityId, id: id)
+        } catch {
+            return try await query(table: "gyms", columns: gymColumns, cityId: cityId, id: id)
+        }
+    }
+
+    private func query(table: String, columns: String, cityId: UUID?, id: UUID?) async throws -> [GymRow] {
+        var builder = client.from(table).select(columns)
+        if let cityId {
+            builder = builder.eq("city_id", value: cityId.uuidString)
+        }
+        if let id {
+            builder = builder.eq("id", value: id.uuidString)
+        }
+        let rows: [GymRow] = try await builder
+            .order("name")
+            .execute()
+            .value
+        return rows
+    }
 }
 
 struct SupabaseCoachService: CoachService {
     let client: SupabaseClient
 
-    private let coachColumns = "id,full_name,full_name_latin,photo_url,belt,degree,promoted_by_coach_id,lineage_text,achievements,instagram,user_id,gym_coaches(gym_id)"
+    private let baseColumns = "id,full_name,full_name_latin,photo_url,belt,degree,promoted_by_coach_id,lineage_text,achievements,instagram,user_id,gym_coaches(gym_id)"
 
     func coaches() async throws -> [Coach] {
-        let rows: [CoachRow] = try await client.from("coaches")
-            .select(coachColumns)
-            .order("full_name")
-            .execute()
-            .value
+        let rows = try await fetchCoaches(id: nil)
         return rows.map { $0.toModel() }
     }
 
     func coaches(gymId: UUID) async throws -> [Coach] {
         let all = try await coaches()
         return all.filter { $0.gymIds.contains(gymId) }
+    }
+
+    func coach(id: UUID) async throws -> Coach? {
+        let rows = try await fetchCoaches(id: id)
+        return rows.first?.toModel()
+    }
+
+    /// Tries with the `bio` column (added in 0003); falls back if it doesn't exist yet.
+    private func fetchCoaches(id: UUID?) async throws -> [CoachRow] {
+        do {
+            return try await query(columns: baseColumns + ",bio", id: id)
+        } catch {
+            return try await query(columns: baseColumns, id: id)
+        }
+    }
+
+    private func query(columns: String, id: UUID?) async throws -> [CoachRow] {
+        var builder = client.from("coaches").select(columns)
+        if let id {
+            builder = builder.eq("id", value: id.uuidString)
+        }
+        let rows: [CoachRow] = try await builder
+            .order("full_name")
+            .execute()
+            .value
+        return rows
     }
 }

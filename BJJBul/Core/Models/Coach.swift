@@ -24,4 +24,5 @@ struct Coach: Identifiable, Codable, Hashable {
     var gymIds: [UUID]
     // Phase 2 hook: link to a user account
     var userId: UUID?
+    var bio: String? = nil
 }

@@ -8,6 +8,7 @@ struct BJJBulApp: App {
         WindowGroup {
             RootTabView()
                 .environment(services)
+                .task { await services.refreshSession() }
         }
     }
 }

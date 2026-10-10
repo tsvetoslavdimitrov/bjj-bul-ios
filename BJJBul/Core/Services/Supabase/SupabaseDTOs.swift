@@ -92,6 +92,7 @@ struct CoachRow: Decodable {
     let instagram: String?
     let user_id: UUID?
     let gym_coaches: [GymCoachLink]?
+    let bio: String?
 
     func toModel() -> Coach {
         Coach(id: id, fullName: full_name, fullNameLatin: full_name_latin,
@@ -99,6 +100,66 @@ struct CoachRow: Decodable {
               belt: belt.flatMap { Belt(rawValue: $0) } ?? .white, degree: degree ?? 0,
               promotedByCoachId: promoted_by_coach_id, lineageText: lineage_text,
               achievements: achievements ?? [], instagram: instagram,
-              gymIds: (gym_coaches ?? []).map { $0.gym_id }, userId: user_id)
+              gymIds: (gym_coaches ?? []).map { $0.gym_id }, userId: user_id, bio: bio)
     }
+}
+
+struct ProfileRow: Decodable {
+    let id: UUID
+    let display_name: String?
+    let avatar_url: String?
+    let belt: String?
+    let stripes: Int?
+    let home_gym_id: UUID?
+    let locale: String?
+    let is_public: Bool?
+    let smoothcomp_profile_url: String?
+
+    func toModel(favoriteGymIds: [UUID]) -> AppUser {
+        AppUser(id: id, displayName: display_name ?? "",
+                avatarURL: avatar_url.flatMap { URL(string: $0) },
+                belt: belt.flatMap { Belt(rawValue: $0) } ?? .white,
+                stripes: stripes ?? 0, homeGymId: home_gym_id, trainingSince: nil,
+                locale: locale ?? "bg", favoriteGymIds: favoriteGymIds,
+                isPublic: is_public ?? false,
+                smoothcompProfileURL: smoothcomp_profile_url.flatMap { URL(string: $0) })
+    }
+}
+
+/// Encodes home_gym_id explicitly (as null when cleared).
+struct ProfileUpsert: Encodable {
+    let id: UUID
+    let displayName: String
+    let belt: String
+    let stripes: Int
+    let homeGymId: UUID?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case displayName = "display_name"
+        case belt
+        case stripes
+        case homeGymId = "home_gym_id"
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(displayName, forKey: .displayName)
+        try container.encode(belt, forKey: .belt)
+        try container.encode(stripes, forKey: .stripes)
+        try container.encode(homeGymId, forKey: .homeGymId)
+    }
+}
+
+struct FavoriteRow: Codable {
+    let user_id: UUID
+    let gym_id: UUID
+}
+
+struct SuggestionInsert: Encodable {
+    let user_id: UUID
+    let entity_type: String
+    let entity_id: UUID?
+    let payload: [String: String]
 }

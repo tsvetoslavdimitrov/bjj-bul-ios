@@ -14,7 +14,7 @@ struct ExploreView: View {
     var body: some View {
         NavigationStack {
             Map(position: $position) {
-                ForEach(gyms.filter { $0.latitude != 0 || $0.longitude != 0 }) { gym in
+                ForEach(gyms.filter { $0.hasCoordinates }) { gym in
                     Marker(gym.name, coordinate: CLLocationCoordinate2D(latitude: gym.latitude, longitude: gym.longitude))
                 }
             }

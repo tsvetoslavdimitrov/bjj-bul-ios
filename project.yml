@@ -19,6 +19,11 @@ targets:
     platform: iOS
     sources:
       - BJJBul
+    entitlements:
+      path: BJJBul/BJJBul.entitlements
+      properties:
+        com.apple.developer.applesignin:
+          - Default
     configFiles:
       Debug: Config/Secrets.xcconfig
       Release: Config/Secrets.xcconfig

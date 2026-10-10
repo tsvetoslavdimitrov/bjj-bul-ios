@@ -27,6 +27,9 @@ struct GymListView: View {
             .navigationDestination(for: Gym.self) { gym in
                 GymDetailView(gym: gym)
             }
+            .navigationDestination(for: Coach.self) { coach in
+                CoachDetailView(coach: coach)
+            }
             .searchable(text: $searchText)
             .task {
                 gyms = (try? await services.gyms.gyms(cityId: nil)) ?? []
