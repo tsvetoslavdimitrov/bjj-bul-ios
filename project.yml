@@ -1,0 +1,44 @@
+name: BJJBul
+options:
+  bundleIdPrefix: com.bjjbul
+  deploymentTarget:
+    iOS: "17.0"
+  developmentLanguage: bg
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  BJJBul:
+    type: application
+    platform: iOS
+    sources:
+      - BJJBul
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bjjbul.app
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_CFBundleDisplayName: BJJ Bul
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Used to show BJJ gyms near you."
+        TARGETED_DEVICE_FAMILY: "1"
+  BJJBulTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - BJJBulTests
+    dependencies:
+      - target: BJJBul
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.bjjbul.tests
+schemes:
+  BJJBul:
+    build:
+      targets:
+        BJJBul: all
+    test:
+      targets:
+        - BJJBulTests
