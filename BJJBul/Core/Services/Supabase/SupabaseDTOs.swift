@@ -114,6 +114,8 @@ struct ProfileRow: Decodable {
     let locale: String?
     let is_public: Bool?
     let smoothcomp_profile_url: String?
+    let terms_accepted_at: String?
+    let terms_version: String?
 
     func toModel(favoriteGymIds: [UUID]) -> AppUser {
         AppUser(id: id, displayName: display_name ?? "",
@@ -122,7 +124,9 @@ struct ProfileRow: Decodable {
                 stripes: stripes ?? 0, homeGymId: home_gym_id, trainingSince: nil,
                 locale: locale ?? "bg", favoriteGymIds: favoriteGymIds,
                 isPublic: is_public ?? false,
-                smoothcompProfileURL: smoothcomp_profile_url.flatMap { URL(string: $0) })
+                smoothcompProfileURL: smoothcomp_profile_url.flatMap { URL(string: $0) },
+                termsAcceptedAt: terms_accepted_at.map { DateParsing.date(from: $0) },
+                termsVersion: terms_version)
     }
 }
 

@@ -9,6 +9,13 @@ struct BJJBulApp: App {
             RootTabView()
                 .environment(services)
                 .task { await services.refreshSession() }
+                .fullScreenCover(isPresented: Binding(
+                    get: { services.needsTermsAcceptance },
+                    set: { _ in }
+                )) {
+                    TermsAcceptanceView()
+                        .environment(services)
+                }
         }
     }
 }

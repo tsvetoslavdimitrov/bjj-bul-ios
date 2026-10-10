@@ -122,3 +122,15 @@
 "report.reason.harassment" = "Harassment or bullying";
 "report.reason.inappropriate" = "Inappropriate content";
 "report.reason.other" = "Something else";
+"legal.section" = "Legal & support";
+"legal.terms" = "Terms of Use";
+"legal.privacy" = "Privacy Policy";
+"legal.contact" = "Contact";
+"legal.accept.title" = "Before you continue";
+"legal.accept.intro" = "Please read and accept the Terms of Use and Privacy Policy to use your BJJ Bul account.";
+"legal.accept.zeroTolerance" = "We have zero tolerance for objectionable content and abusive users. Content that breaks the rules is removed, and its authors are banned.";
+"legal.accept.toggle" = "I agree to the Terms of Use and Privacy Policy";
+"legal.accept.continue" = "Accept and continue";
+"legal.accept.decline" = "Decline and sign out";
+"legal.accept.declineFooter" = "You can still browse gyms and coaches without an account.";
+"legal.signIn.notice" = "By signing in, you agree to the Terms of Use and Privacy Policy. You'll be asked to confirm after signing in.";

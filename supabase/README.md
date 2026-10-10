@@ -33,3 +33,6 @@ In Dashboard → SQL Editor, paste and run `migrations/0001_init.sql`, then `see
 ## 0004 social
 `0004_social.sql` adds posts, post_media, likes, comments, follows, blocks and reports. It also adds the RPCs `get_feed`, `get_comments` and `get_public_profile` (these run with definer rights and filter out blocked users in both directions), RLS, and the public `post-media` storage bucket. Uploads must go under `<user-id>/...`, and files are capped at 5 MB.
 Moderation: review the `reports` table in the dashboard. Apple expects action on reports within 24 hours.
+
+## 0005 terms
+`0005_terms.sql` adds `profiles.terms_accepted_at` and `terms_version`, plus the `accept_terms(p_version)` RPC. The app blocks signed-in use until the current `AppConfig.termsVersion` has been accepted.

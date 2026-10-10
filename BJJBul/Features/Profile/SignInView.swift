@@ -56,6 +56,14 @@ struct SignInView: View {
                     Text(errorMessage).foregroundStyle(.red)
                 }
             }
+
+            Section {
+                Text("legal.signIn.notice")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            LegalLinksSection()
         }
     }
 

@@ -104,4 +104,13 @@ struct SupabaseUserService: UserService {
             .insert(row)
             .execute()
     }
+
+    func acceptTerms(version: String) async throws {
+        try await client.rpc("accept_terms", params: AcceptTermsParams(p_version: version))
+            .execute()
+    }
+}
+
+struct AcceptTermsParams: Encodable {
+    let p_version: String
 }

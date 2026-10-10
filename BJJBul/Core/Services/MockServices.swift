@@ -59,4 +59,9 @@ final class MockUserService: UserService {
     }
 
     func submitSuggestion(entityType: String, entityId: UUID?, message: String) async throws {}
+
+    func acceptTerms(version: String) async throws {
+        user.termsAcceptedAt = Date()
+        user.termsVersion = version
+    }
 }

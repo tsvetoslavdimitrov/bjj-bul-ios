@@ -13,4 +13,6 @@ struct AppUser: Identifiable, Codable, Hashable {
     // Phase 2/3 hooks
     var isPublic: Bool
     var smoothcompProfileURL: URL?
+    var termsAcceptedAt: Date? = nil
+    var termsVersion: String? = nil
 }

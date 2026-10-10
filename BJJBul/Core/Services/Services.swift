@@ -20,6 +20,7 @@ protocol UserService {
     func favoriteGymIds() async throws -> [UUID]
     func setFavorite(gymId: UUID, isFavorite: Bool) async throws
     func submitSuggestion(entityType: String, entityId: UUID?, message: String) async throws
+    func acceptTerms(version: String) async throws
 }
 
 protocol AuthService {

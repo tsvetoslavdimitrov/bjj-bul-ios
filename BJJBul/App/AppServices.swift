@@ -15,6 +15,12 @@ final class AppServices {
 
     var isSignedIn: Bool { currentUser != nil }
 
+    /// Signed in but hasn't accepted the current Terms of Use yet.
+    var needsTermsAcceptance: Bool {
+        guard let user = currentUser else { return false }
+        return user.termsAcceptedAt == nil || user.termsVersion != AppConfig.termsVersion
+    }
+
     init(gyms: GymService, coaches: CoachService, users: UserService, auth: AuthService,
          social: SocialService) {
         self.gyms = gyms

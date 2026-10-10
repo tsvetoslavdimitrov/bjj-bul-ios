@@ -46,6 +46,8 @@ struct ProfileView: View {
                 Button("profile.edit") { showEditor = true }
             }
 
+            LegalLinksSection()
+
             Section {
                 Button("profile.signOut") {
                     Task { await signOut() }

@@ -18,7 +18,12 @@ targets:
     type: application
     platform: iOS
     sources:
-      - BJJBul
+      - path: BJJBul
+        excludes:
+          - "Resources/Legal/**"
+      - path: BJJBul/Resources/Legal
+        type: folder
+        buildPhase: resources
     entitlements:
       path: BJJBul/BJJBul.entitlements
       properties:
