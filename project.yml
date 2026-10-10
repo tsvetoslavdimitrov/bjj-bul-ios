@@ -29,6 +29,11 @@ targets:
       properties:
         com.apple.developer.applesignin:
           - Default
+    info:
+      path: BJJBul/Info.plist
+      properties:
+        SUPABASE_URL: $(SUPABASE_URL)
+        SUPABASE_ANON_KEY: $(SUPABASE_ANON_KEY)
     configFiles:
       Debug: Config/Secrets.xcconfig
       Release: Config/Secrets.xcconfig
@@ -43,8 +48,6 @@ targets:
         INFOPLIST_KEY_CFBundleDisplayName: BJJ Bul
         INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Used to show BJJ gyms near you."
         TARGETED_DEVICE_FAMILY: "1"
-        INFOPLIST_KEY_SUPABASE_URL: $(SUPABASE_URL)
-        INFOPLIST_KEY_SUPABASE_ANON_KEY: $(SUPABASE_ANON_KEY)
   BJJBulTests:
     type: bundle.unit-test
     platform: iOS
