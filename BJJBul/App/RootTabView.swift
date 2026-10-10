@@ -3,6 +3,8 @@ import SwiftUI
 struct RootTabView: View {
     var body: some View {
         TabView {
+            FeedView()
+                .tabItem { Label("tab.feed", systemImage: "newspaper") }
             ExploreView()
                 .tabItem { Label("tab.explore", systemImage: "map") }
             GymListView()

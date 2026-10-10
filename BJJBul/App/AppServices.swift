@@ -8,17 +8,20 @@ final class AppServices {
     let coaches: CoachService
     let users: UserService
     let auth: AuthService
+    let social: SocialService
 
     var currentUser: AppUser?
     var favoriteGymIds: Set<UUID> = []
 
     var isSignedIn: Bool { currentUser != nil }
 
-    init(gyms: GymService, coaches: CoachService, users: UserService, auth: AuthService) {
+    init(gyms: GymService, coaches: CoachService, users: UserService, auth: AuthService,
+         social: SocialService) {
         self.gyms = gyms
         self.coaches = coaches
         self.users = users
         self.auth = auth
+        self.social = social
     }
 
     @MainActor
@@ -39,7 +42,8 @@ final class AppServices {
             gyms: SupabaseGymService(client: client),
             coaches: SupabaseCoachService(client: client),
             users: SupabaseUserService(client: client),
-            auth: SupabaseAuthService(client: client)
+            auth: SupabaseAuthService(client: client),
+            social: SupabaseSocialService(client: client)
         )
     }()
 
@@ -47,6 +51,7 @@ final class AppServices {
         gyms: MockGymService(),
         coaches: MockCoachService(),
         users: MockUserService(),
-        auth: MockAuthService()
+        auth: MockAuthService(),
+        social: MockSocialService()
     )
 }

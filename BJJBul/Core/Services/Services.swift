@@ -30,3 +30,19 @@ protocol AuthService {
     func signOut() async throws
     func deleteAccount() async throws
 }
+
+protocol SocialService {
+    /// Newest first. Pass the last post's `cursor` as `before` to load the next page.
+    func feed(scope: FeedScope, authorId: UUID?, before: String?, limit: Int) async throws -> [Post]
+    /// `images` are already-compressed JPEG data (max 4).
+    func createPost(body: String, type: PostType, gymId: UUID?, images: [Data]) async throws
+    func deletePost(id: UUID) async throws
+    func setLike(postId: UUID, liked: Bool) async throws
+    func comments(postId: UUID) async throws -> [PostComment]
+    func addComment(postId: UUID, body: String) async throws
+    func deleteComment(id: UUID) async throws
+    func profile(userId: UUID) async throws -> PublicProfile?
+    func setFollow(userId: UUID, following: Bool) async throws
+    func report(_ target: ReportTarget, reason: ReportReason) async throws
+    func block(userId: UUID) async throws
+}
