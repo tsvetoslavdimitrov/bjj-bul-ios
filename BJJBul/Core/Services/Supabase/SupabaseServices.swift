@@ -4,7 +4,7 @@ import Supabase
 struct SupabaseGymService: GymService {
     let client: SupabaseClient
 
-    private let gymColumns = "id,name,name_latin,city_id,address,affiliation,phone,email,website,instagram,facebook,photo_urls,price_drop_in,price_monthly,price_kids,currency,has_kids,has_women_only,verified,owner_user_id"
+    private let gymColumns = "id,name,name_latin,city_id,address,affiliation,phone,email,website,instagram,facebook,photo_urls,price_drop_in,price_monthly,price_kids,currency,has_kids,has_women_only,verified,owner_user_id,lat,lng"
 
     func cities() async throws -> [City] {
         let rows: [CityRow] = try await client.from("cities")
@@ -18,14 +18,14 @@ struct SupabaseGymService: GymService {
     func gyms(cityId: UUID?) async throws -> [Gym] {
         let rows: [GymRow]
         if let cityId {
-            rows = try await client.from("gyms")
+            rows = try await client.from("gyms_with_coords")
                 .select(gymColumns)
                 .eq("city_id", value: cityId.uuidString)
                 .order("name")
                 .execute()
                 .value
         } else {
-            rows = try await client.from("gyms")
+            rows = try await client.from("gyms_with_coords")
                 .select(gymColumns)
                 .order("name")
                 .execute()
@@ -34,8 +34,18 @@ struct SupabaseGymService: GymService {
         return rows.map { $0.toModel() }
     }
 
+    /// Only gyms with real coordinates, for map pins.
+    func mappableGyms() async throws -> [Gym] {
+        let rows: [GymRow] = try await client.from("gyms_with_coords")
+            .select(gymColumns)
+            .not("lat", operator: .is, value: "null")
+            .execute()
+            .value
+        return rows.map { $0.toModel() }
+    }
+
     func gym(id: UUID) async throws -> Gym? {
-        let rows: [GymRow] = try await client.from("gyms")
+        let rows: [GymRow] = try await client.from("gyms_with_coords")
             .select(gymColumns)
             .eq("id", value: id.uuidString)
             .limit(1)

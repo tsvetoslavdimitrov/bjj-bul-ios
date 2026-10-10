@@ -1,7 +1,7 @@
 import Foundation
 
-/// Row shapes returned by PostgREST (snake_case). Location is not selected directly;
-/// lat/lng come from the gyms_near RPC or can be added via a view later.
+/// Row shapes returned by PostgREST (snake_case). Gyms are read from the
+/// gyms_with_coords view, which exposes lat/lng (null when not geocoded).
 struct CityRow: Decodable {
     let id: UUID
     let slug: String
@@ -36,10 +36,15 @@ struct GymRow: Decodable {
     let has_women_only: Bool?
     let verified: Bool
     let owner_user_id: UUID?
+    let lat: Double?
+    let lng: Double?
 
-    func toModel(latitude: Double = 0, longitude: Double = 0) -> Gym {
+    /// True when the gym has real coordinates (otherwise hide it from the map).
+    var hasLocation: Bool { lat != nil && lng != nil }
+
+    func toModel() -> Gym {
         Gym(id: id, name: name, nameLatin: name_latin, cityId: city_id,
-            address: address ?? "", latitude: latitude, longitude: longitude,
+            address: address ?? "", latitude: lat ?? 0, longitude: lng ?? 0,
             affiliation: affiliation, phone: phone, email: email,
             website: website.flatMap { URL(string: $0) },
             instagram: instagram, facebook: facebook,

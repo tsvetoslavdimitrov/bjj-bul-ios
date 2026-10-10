@@ -1,24 +1,24 @@
-slug,city,name,name_latin,address,lat,lng,affiliation,phone,email,website,instagram,facebook,source_url,notes
-bagir-bjj-sofia,sofia,Bagir Brazilian Jiu-Jitsu Academy,,"Ovcha kupel, Nikola Petkov Blvd 52, 1618 Sofia",,,,0896454641,akim@bagirbjj.com,https://www.bagirbjj.com/,bagirbjj,,https://www.bagirbjj.com/,
-twisted-jiu-jitsu-sofia,sofia,Twisted Jiu Jitsu,,"бул. Черни връх 47, ет. 2, София",,,Caio Terra Association,0898664490,,https://twistedjiujitsu.com/,,,https://www.caioterrabjj.com/affiliates/twisted-jiu-jitsu/,
-gfteam-bulgaria-sofia,sofia,GFTeam Bulgaria,,"бул. Евлоги Георгиев 38, вх. I, София 1000",,,GFTeam,+359890455557,,http://gfteambulgaria.com/,,,https://www.localgymsandfitness.com/BG/Sofia/1533797683552918/GFTeam-Bulgaria---Brazilian-Jiu-Jitsu,Third-party directory listing
-open-mat-bjj-sofia,sofia,Open Mat BJJ (Gabas Team),,,,,Gabas Team,,,,,,https://graciebarraevents.smoothcomp.com/en/club/13473,
-23-fight-academy-sofia,sofia,23 Fight Academy,,"ул. Д-р Йордан Йосифов 11, Студентски град, София",,,LG Academy,,,,,,https://www.lg-academy.com/en/clubs,Multi-sport gym with BJJ classes
-pitbulls-grappling-sofia,sofia,Pitbulls Grappling and MMA,,"бул. Рожен 23, Стадион Локомотив, София",,,,,,,,https://www.facebook.com/PitbullsFF/,https://pitbullsgrappling.alle.bg/,Grappling/BJJ/MMA
-sandev-bjj-sofia,sofia,Sandev BJJ (София),,,,,Sandev Fight Team,0879894111,sandevteam.info@gmail.com,https://sandevbjj.com/,,,https://sandevbjj.com/,
-blackstar-bjj-plovdiv,plovdiv,BlackStar BJJ Studio,,"бул. Пещерско шосе 30, Пловдив",,,Checkmat,,,https://blackstarbjj.com/,,,https://blackstarbjj.com/,Address from Exa places listing; site and TERES both claim Checkmat representation
-thrace-jiu-jitsu-plovdiv,plovdiv,Thrace Jiu Jitsu,Thrace Jiu Jitsu,,,,,0884850996,,https://www.thracejiujitsu.com/,,,https://www.thracejiujitsu.com/,
-victory-one-plovdiv,plovdiv,Victory One Jiu Jitsu,,,,,Lucas Lepri,,,https://www.victoryonebjj.com/,,,https://www.victoryonebjj.com/academy/,
-teres-plovdiv,plovdiv,TERES Gym & Fight Club,,"Кючука, ул. Димитър Талев 75А, Пловдив",,,Checkmat,+359878737708,info@teres.bg,https://www.teres.bg,,https://facebook.com/SportClubTeres,https://teres.bg/bjj-grapling-brazilsko-dzhiu-dzhicu-trenirovki/,
-raiders-jiu-jitsu-plovdiv,plovdiv,Raiders Jiu Jitsu Plovdiv,,,,,LG Academy,,,,,,https://www.lg-academy.com/en/clubs,
-bjj-varna,varna,BJJ Varna,,"кв. Възраждане, ул. Здравко Чакъров 9, Варна",,,,+359890161401,,https://bjj-varna.com/,,,https://bjj-varna.com/contact-us/,
-inspirit-jiu-jitsu-varna,varna,Inspirit Jiu Jitsu,,"ул. Петко Стайнов 3, 9009 Варна",43.224605,27.897321,,+359888850410,,,,https://www.facebook.com/InspiritJiuJitsu/,https://www.oink.bg/biz/inspirit_jiu_jitsu,Coordinates from Exa places listing (https://exa.ai/library/place/slpxnnwy39l)
-gfteam-burgas,burgas,BJJ GFTeam Burgas,,"Спортна зала Електра, ул. Янко Комитов 16а, Бургас 8000",,,GFTeam,+359899135009,info@gfteam.bg,https://gfteam.bg/,gfteamburgas,,https://gfteam.bg/%D0%BA%D0%BE%D0%BD%D1%82%D0%B0%D0%BA%D1%82%D0%B8/,
-lg-academy-burgas,burgas,Lubomir Guedjev BJJ and MMA Academy Burgas,,,,,LG Academy,,,,,,https://www.lg-academy.com/en/clubs,
-helios-ruse,ruse,Академия Хелиос,Helios Academy,,,,Twisted Jiu Jitsu,,,https://heliosgymbg.com/,,,https://heliosgymbg.com/,
-bjj-ruse,ruse,BJJ Ruse,,,,,,,,,,,https://novini247.com/novini/traditsionno-silniyat-grad-v-boynite-sportove-ruse-veche-ima-nova_10020297.html,Only a news article; confirm it is still active
-no-limitation-pleven,pleven,No Limitation,,"ул. Полк. инж. Цветан Лазаров 4, Плевен",,,,+359889218061,,https://nlfightclub.alle.bg/,,,https://smoothcomp.com/en/club/15194,MMA/BJJ/grappling; address & phone per nlfightclub.alle.bg contact page
-sandev-bjj-stara-zagora,stara-zagora,Sandev BJJ,,,,,Sandev Fight Team,0887834477,sandevteam.info@gmail.com,https://sandevbjj.com/,,,https://sandevbjj.com/,
-sandev-bjj-kazanlak,kazanlak,Sandev BJJ (Казанлък),,,,,Sandev Fight Team,0899819818,sandevteam.info@gmail.com,https://sandevbjj.com/,,,https://sandevbjj.com/,
-zapryanov-bjj-haskovo,haskovo,Brazilian Jiu-Jitsu Academy – Vladimir Zapryanov,,,,,,,,,,,https://companybook.bg/companies/207849766,Registered association only (2024); training location unknown
-icon-jiu-jitsu-pazardzhik,pazardzhik,Icon Jiu-Jitsu Team - Pazardzhik,,,,,,,,,,,https://exa.ai/library/places?q=949724141fd2d199,Weak source (places aggregator)
+slug,city,name,name_latin,address,lat,lng,affiliation,phone,email,website,instagram,facebook,source_url,notes,geocode_source
+bagir-bjj-sofia,sofia,Bagir Brazilian Jiu-Jitsu Academy,,"Ovcha kupel, Nikola Petkov Blvd 52, 1618 Sofia",42.6691113,23.2545085,,0896454641,akim@bagirbjj.com,https://www.bagirbjj.com/,bagirbjj,,https://www.bagirbjj.com/,,Nominatim building бул. Никола Петков 52
+twisted-jiu-jitsu-sofia,sofia,Twisted Jiu Jitsu,,"бул. Черни връх 47, ет. 2, София",42.6619185,23.3179386,Caio Terra Association,0898664490,,https://twistedjiujitsu.com/,,,https://www.caioterrabjj.com/affiliates/twisted-jiu-jitsu/,,Nominatim building бул. Черни връх 47 (Бизнес център Витоша)
+gfteam-bulgaria-sofia,sofia,GFTeam Bulgaria,,"бул. Евлоги Георгиев 38, вх. I, София 1000",,,GFTeam,+359890455557,,http://gfteambulgaria.com/,,,https://www.localgymsandfitness.com/BG/Sofia/1533797683552918/GFTeam-Bulgaria---Brazilian-Jiu-Jitsu,Third-party directory listing,
+open-mat-bjj-sofia,sofia,Open Mat BJJ (Gabas Team),,,,,Gabas Team,,,,,,https://graciebarraevents.smoothcomp.com/en/club/13473,,
+23-fight-academy-sofia,sofia,23 Fight Academy,,"ул. Д-р Йордан Йосифов 11, Студентски град, София",42.6532646,23.3410148,LG Academy,,,,,,https://www.lg-academy.com/en/clubs,Multi-sport gym with BJJ classes,Nominatim building ул. Д-р Йордан Йосифов 11
+pitbulls-grappling-sofia,sofia,Pitbulls Grappling and MMA,,"бул. Рожен 23, Стадион Локомотив, София",42.7363544,23.3148513,,,,,,https://www.facebook.com/PitbullsFF/,https://pitbullsgrappling.alle.bg/,Grappling/BJJ/MMA,Nominatim building бул. Рожен 23
+sandev-bjj-sofia,sofia,Sandev BJJ (София),,,,,Sandev Fight Team,0879894111,sandevteam.info@gmail.com,https://sandevbjj.com/,,,https://sandevbjj.com/,,
+blackstar-bjj-plovdiv,plovdiv,BlackStar BJJ Studio,,"бул. Пещерско шосе 30, Пловдив",,,Checkmat,,,https://blackstarbjj.com/,,,https://blackstarbjj.com/,Address from Exa places listing; site and TERES both claim Checkmat representation,
+thrace-jiu-jitsu-plovdiv,plovdiv,Thrace Jiu Jitsu,Thrace Jiu Jitsu,,,,,0884850996,,https://www.thracejiujitsu.com/,,,https://www.thracejiujitsu.com/,,
+victory-one-plovdiv,plovdiv,Victory One Jiu Jitsu,,,,,Lucas Lepri,,,https://www.victoryonebjj.com/,,,https://www.victoryonebjj.com/academy/,,
+teres-plovdiv,plovdiv,TERES Gym & Fight Club,,"Кючука, ул. Димитър Талев 75А, Пловдив",,,Checkmat,+359878737708,info@teres.bg,https://www.teres.bg,,https://facebook.com/SportClubTeres,https://teres.bg/bjj-grapling-brazilsko-dzhiu-dzhicu-trenirovki/,,
+raiders-jiu-jitsu-plovdiv,plovdiv,Raiders Jiu Jitsu Plovdiv,,,,,LG Academy,,,,,,https://www.lg-academy.com/en/clubs,,
+bjj-varna,varna,BJJ Varna,,"кв. Възраждане, ул. Здравко Чакъров 9, Варна",,,,+359890161401,,https://bjj-varna.com/,,,https://bjj-varna.com/contact-us/,,
+inspirit-jiu-jitsu-varna,varna,Inspirit Jiu Jitsu,,"ул. Петко Стайнов 3, 9009 Варна",43.224605,27.897321,,+359888850410,,,,https://www.facebook.com/InspiritJiuJitsu/,https://www.oink.bg/biz/inspirit_jiu_jitsu,Coordinates from Exa places listing (https://exa.ai/library/place/slpxnnwy39l),"Exa places listing (pre-existing, not Nominatim)"
+gfteam-burgas,burgas,BJJ GFTeam Burgas,,"Спортна зала Електра, ул. Янко Комитов 16а, Бургас 8000",,,GFTeam,+359899135009,info@gfteam.bg,https://gfteam.bg/,gfteamburgas,,https://gfteam.bg/%D0%BA%D0%BE%D0%BD%D1%82%D0%B0%D0%BA%D1%82%D0%B8/,,
+lg-academy-burgas,burgas,Lubomir Guedjev BJJ and MMA Academy Burgas,,,,,LG Academy,,,,,,https://www.lg-academy.com/en/clubs,,
+helios-ruse,ruse,Академия Хелиос,Helios Academy,,,,Twisted Jiu Jitsu,,,https://heliosgymbg.com/,,,https://heliosgymbg.com/,,
+bjj-ruse,ruse,BJJ Ruse,,,,,,,,,,,https://novini247.com/novini/traditsionno-silniyat-grad-v-boynite-sportove-ruse-veche-ima-nova_10020297.html,Only a news article; confirm it is still active,
+no-limitation-pleven,pleven,No Limitation,,"ул. Полк. инж. Цветан Лазаров 4, Плевен",,,,+359889218061,,https://nlfightclub.alle.bg/,,,https://smoothcomp.com/en/club/15194,MMA/BJJ/grappling; address & phone per nlfightclub.alle.bg contact page,
+sandev-bjj-stara-zagora,stara-zagora,Sandev BJJ,,,,,Sandev Fight Team,0887834477,sandevteam.info@gmail.com,https://sandevbjj.com/,,,https://sandevbjj.com/,,
+sandev-bjj-kazanlak,kazanlak,Sandev BJJ (Казанлък),,,,,Sandev Fight Team,0899819818,sandevteam.info@gmail.com,https://sandevbjj.com/,,,https://sandevbjj.com/,,
+zapryanov-bjj-haskovo,haskovo,Brazilian Jiu-Jitsu Academy – Vladimir Zapryanov,,,,,,,,,,,https://companybook.bg/companies/207849766,Registered association only (2024); training location unknown,
+icon-jiu-jitsu-pazardzhik,pazardzhik,Icon Jiu-Jitsu Team - Pazardzhik,,,,,,,,,,,https://exa.ai/library/places?q=949724141fd2d199,Weak source (places aggregator),
