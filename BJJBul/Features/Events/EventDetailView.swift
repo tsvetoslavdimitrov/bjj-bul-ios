@@ -34,7 +34,7 @@ struct EventDetailView: View {
                 Section("events.registration") {
                     if let deadline = event.registrationDeadline {
                         LabeledContent("events.registration.deadline",
-                                       value: deadline.formatted(.dateTime.day().month().year().timeZone(Calendar.bulgaria.timeZone)))
+                                       value: deadline.formatted(Date.FormatStyle(timeZone: Calendar.bulgaria.timeZone).day().month().year()))
                     }
                     if let info = event.registrationInfo {
                         Text(info)

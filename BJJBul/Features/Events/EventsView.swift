@@ -82,9 +82,9 @@ struct EventRowView: View {
     var body: some View {
         HStack(spacing: 12) {
             VStack(spacing: 0) {
-                Text(event.startsAt.formatted(.dateTime.day().timeZone(Calendar.bulgaria.timeZone)))
+                Text(event.startsAt.formatted(Date.FormatStyle(timeZone: Calendar.bulgaria.timeZone).day()))
                     .font(.title3).bold()
-                Text(event.startsAt.formatted(.dateTime.weekday(.abbreviated).timeZone(Calendar.bulgaria.timeZone)))
+                Text(event.startsAt.formatted(Date.FormatStyle(timeZone: Calendar.bulgaria.timeZone).weekday(.abbreviated)))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
