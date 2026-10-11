@@ -73,6 +73,11 @@ struct GymDashboardView: View {
                     Label("gym.dash.classes", systemImage: "calendar")
                 }
                 NavigationLink {
+                    ReportsView(myGym: myGym)
+                } label: {
+                    Label("reports.title", systemImage: "chart.bar.xaxis")
+                }
+                NavigationLink {
                     KioskSetupView(myGym: myGym)
                 } label: {
                     Label("kiosk.title", systemImage: "ipad.landscape")

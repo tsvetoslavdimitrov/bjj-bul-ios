@@ -183,3 +183,13 @@ protocol KioskService {
                       method: MemberPaymentMethod?, staffPin: String) async throws
     func attendanceToday(gymId: UUID) async throws -> [KioskAttendanceRow]
 }
+
+/// Staff reports for a gym (0014). Dates are Sofia calendar days, inclusive.
+protocol ReportsService {
+    func visits(gymId: UUID, from: Date, to: Date, bucket: ReportBucket) async throws -> VisitsReport
+    func classes(gymId: UUID, from: Date, to: Date) async throws -> ClassesReport
+    func revenue(gymId: UUID, from: Date, to: Date, bucket: ReportBucket) async throws -> RevenueReport
+    func members(gymId: UUID) async throws -> MembersReport
+    func visitsList(gymId: UUID, from: Date, to: Date) async throws -> [VisitListRow]
+    func paymentsList(gymId: UUID, from: Date, to: Date) async throws -> [PaymentListRow]
+}
