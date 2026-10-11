@@ -1,38 +1,39 @@
 import SwiftUI
 
-struct GymListView: View {
-    @Environment(AppServices.self) private var services
-    @State private var gyms: [Gym] = []
+/// Gym directory list (embedded in Explore's NavigationStack).
+struct GymListContent: View {
+    let gyms: [Gym]
+    let cityName: (UUID) -> String?
     @State private var searchText = ""
+    @State private var onlyMissing = false
 
     private var filtered: [Gym] {
-        guard !searchText.isEmpty else { return gyms }
-        return gyms.filter {
-            $0.name.localizedCaseInsensitiveContains(searchText)
-                || ($0.nameLatin ?? "").localizedCaseInsensitiveContains(searchText)
+        gyms.filter { gym in
+            let matchesSearch = searchText.isEmpty
+                || gym.name.localizedCaseInsensitiveContains(searchText)
+                || (gym.nameLatin ?? "").localizedCaseInsensitiveContains(searchText)
+                || (gym.affiliation ?? "").localizedCaseInsensitiveContains(searchText)
+            let matchesMissing = !onlyMissing || !gym.hasCoordinates
+            return matchesSearch && matchesMissing
         }
     }
 
     var body: some View {
-        NavigationStack {
-            List(filtered) { gym in
+        List {
+            Toggle("explore.onlyMissing", isOn: $onlyMissing)
+                .font(.subheadline)
+            ForEach(filtered) { gym in
                 NavigationLink(value: gym) {
-                    VStack(alignment: .leading) {
-                        Text(gym.name).font(.headline)
-                        Text(gym.address).font(.subheadline).foregroundStyle(.secondary)
-                    }
+                    GymCardView(gym: gym, cityName: cityName(gym.cityId))
                 }
+                .listRowSeparator(.hidden)
             }
-            .navigationTitle("tab.gyms")
-            .navigationDestination(for: Gym.self) { gym in
-                GymDetailView(gym: gym)
-            }
-            .navigationDestination(for: Coach.self) { coach in
-                CoachDetailView(coach: coach)
-            }
-            .searchable(text: $searchText)
-            .task {
-                gyms = (try? await services.gyms.gyms(cityId: nil)) ?? []
+        }
+        .listStyle(.plain)
+        .searchable(text: $searchText)
+        .overlay {
+            if filtered.isEmpty {
+                ContentUnavailableView("explore.noGyms", systemImage: "building.2")
             }
         }
     }

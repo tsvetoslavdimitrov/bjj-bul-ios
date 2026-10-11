@@ -32,3 +32,7 @@ The app target has the `com.apple.developer.applesignin` entitlement (generated 
 - Terms of Use and Privacy Policy (bg/en): `docs/legal/`. The same files are bundled at `BJJBul/Resources/Legal/`, so keep both copies in sync.
 - Contact and terms version: `BJJBul/App/AppConfig.swift` (admin@bjjbul.com).
 - Report review runbook: `docs/MODERATION.md`.
+
+## Community features (0007)
+Tabs: Feed (daily quote), Explore (map / gyms / coaches, add gym, fix location), Events (competitions / open mats), Training (private log + weekly stats), Profile (drop-in requests, notifications).
+Apply `supabase/migrations/0007_community.sql`. Push setup: `docs/PUSH.md`. Moderation of submissions/reviews: `docs/MODERATION.md`.

@@ -11,6 +11,11 @@ struct TermsAcceptanceView: View {
         NavigationStack {
             Form {
                 Section {
+                    LogoHeader(height: 80)
+                }
+                .listRowBackground(Color.clear)
+
+                Section {
                     Text("legal.accept.intro")
                     Text("legal.accept.zeroTolerance")
                         .bold()

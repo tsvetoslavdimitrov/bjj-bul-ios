@@ -33,3 +33,25 @@ update reports set status = 'rejected' where id = '<report_id>';   -- no violati
 - Check open reports at least once a day (a shared calendar reminder helps), and check admin@bjjbul.com.
 - Count of open reports: `select count(*) from reports where status = 'needs_review';`
 - Keep notes on banned users and repeat offenders.
+
+## Gym submissions (Add gym / Fix location)
+Table: `gym_submissions` (Table Editor, filter `status = pending`). Review within a few days.
+
+- **New gym** (`kind = new_gym`): check it exists (website / Instagram / Google Maps). Approve in the SQL Editor:
+  ```sql
+  select public.approve_gym_submission('<submission id>');
+  -- if the city name doesn't match cities.name_bg/name_en:
+  select public.approve_gym_submission('<submission id>', 'plovdiv');
+  ```
+  This creates the gym (`verified = false`, `review_status = needs_review`, `source_url = user-submission:<id>`). Then fill in schedules/coaches and set `verified = true` once checked.
+- **Location fix** (`kind = location_fix`): compare the pin with the address on a map, then approve with the same function; it updates `gyms.location` (and address if given).
+- Reject: `select public.reject_gym_submission('<id>', 'reason');`
+
+These functions are not callable from the app (execute revoked from anon/authenticated).
+
+## Reviews and open mats
+- Reported reviews show up in `reports` with `review_id` set. Delete the review row in `gym_reviews` if it breaks the Terms.
+- Open mats posted by non-owners are shown as *unverified*. Remove spam rows from `open_mats`; set `verified = true` manually when a gym confirms.
+
+## Instagram embed
+To show a gym's latest post, set `gyms.instagram_embed_url` to the post's official embed URL, e.g. `https://www.instagram.com/p/<code>/embed`. Only instagram.com https URLs are rendered. No scraping.

@@ -30,4 +30,8 @@ struct Gym: Identifiable, Codable, Hashable {
     // Phase 2 hooks
     var ownerUserId: UUID?
     var claimStatus: ClaimStatus
+    // Community (0007)
+    var instagramEmbedURL: URL? = nil
+    var ratingAverage: Double? = nil
+    var ratingCount: Int = 0
 }

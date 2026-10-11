@@ -46,6 +46,24 @@ struct ProfileView: View {
                 Button("profile.edit") { showEditor = true }
             }
 
+            Section {
+                NavigationLink {
+                    MyRequestsView()
+                } label: {
+                    Label("dropin.myRequests", systemImage: "tray")
+                }
+                NavigationLink {
+                    NotificationsView()
+                } label: {
+                    Label("notifications.title", systemImage: "bell")
+                }
+                NavigationLink {
+                    NotificationSettingsView()
+                } label: {
+                    Label("notifications.settings", systemImage: "bell.badge")
+                }
+            }
+
             LegalLinksSection()
 
             Section {

@@ -6,6 +6,10 @@ struct GymDetailView: View {
     @State private var schedule: [ClassSchedule] = []
     @State private var coaches: [Coach] = []
     @State private var showSuggest = false
+    @State private var showFixLocation = false
+    @State private var showDropIn = false
+    @State private var isFollowingGym = false
+    @State private var showSignInHint = false
 
     private var isFavorite: Bool { services.favoriteGymIds.contains(gym.id) }
     private var hasPrices: Bool { gym.priceDropIn != nil || gym.priceMonthly != nil || gym.priceKids != nil }
@@ -17,16 +21,28 @@ struct GymDetailView: View {
         List {
             header
             contactSection
+            dropInSection
+            InstagramSection(gym: gym)
             if hasPrices {
                 pricesSection
             }
             scheduleSection
             coachesSection
+            ReviewsSection(gym: gym)
             Section {
                 Button {
                     showSuggest = true
                 } label: {
                     Label("gym.suggestEdit", systemImage: "square.and.pencil")
+                }
+                Button {
+                    if services.isSignedIn {
+                        showFixLocation = true
+                    } else {
+                        showSignInHint = true
+                    }
+                } label: {
+                    Label("contribute.fixLocation", systemImage: "mappin.and.ellipse")
                 }
             } footer: {
                 VStack(alignment: .leading, spacing: 4) {
@@ -43,6 +59,14 @@ struct GymDetailView: View {
             if services.isSignedIn {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
+                        Task { await toggleFollowGym() }
+                    } label: {
+                        Image(systemName: isFollowingGym ? "bell.fill" : "bell")
+                    }
+                    .accessibilityLabel(Text("gym.follow"))
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
                         Task { await toggleFavorite() }
                     } label: {
                         Image(systemName: isFavorite ? "heart.fill" : "heart")
@@ -54,9 +78,21 @@ struct GymDetailView: View {
         .sheet(isPresented: $showSuggest) {
             SuggestEditView(entityType: "gym", entityId: gym.id, title: gym.name)
         }
+        .sheet(isPresented: $showFixLocation) {
+            FixLocationView(gym: gym)
+        }
+        .sheet(isPresented: $showDropIn) {
+            DropInRequestView(gym: gym, schedule: schedule)
+        }
+        .alert("contribute.signInRequired", isPresented: $showSignInHint) {
+            Button("common.close", role: .cancel) {}
+        }
         .task {
             schedule = (try? await services.gyms.schedule(gymId: gym.id)) ?? []
             coaches = (try? await services.coaches.coaches(gymId: gym.id)) ?? []
+            if services.isSignedIn {
+                isFollowingGym = (try? await services.contributions.isFollowingGym(gym.id)) ?? false
+            }
         }
     }
 
@@ -75,6 +111,17 @@ struct GymDetailView: View {
                     Label("gym.verified", systemImage: "checkmark.seal.fill")
                         .font(.caption)
                         .foregroundStyle(.green)
+                }
+                HStack(spacing: 6) {
+                    if let average = gym.ratingAverage, gym.ratingCount > 0 {
+                        RatingStarsView(rating: average, size: 14)
+                        Text(verbatim: "\(String(format: "%.1f", average)) (\(gym.ratingCount))")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    if !gym.hasCoordinates {
+                        LocationMissingBadge()
+                    }
                 }
             }
             .padding(.vertical, 4)
@@ -111,6 +158,26 @@ struct GymDetailView: View {
             if let facebook = gym.facebook, let url = Links.web(facebook) {
                 Link(destination: url) {
                     Label("common.facebook", systemImage: "person.2")
+                }
+            }
+            if let phone = gym.phone {
+                HStack(spacing: 16) {
+                    if let url = Links.whatsApp(phone) {
+                        Link(destination: url) {
+                            Label("contact.whatsapp", systemImage: "message")
+                        }
+                    }
+                    if let url = Links.viber(phone) {
+                        Link(destination: url) {
+                            Label("contact.viber", systemImage: "phone.bubble")
+                        }
+                    }
+                }
+                .font(.subheadline)
+            }
+            if let handle = gym.instagram, let url = Links.instagramDM(handle) {
+                Link(destination: url) {
+                    Label("contact.instagramDM", systemImage: "paperplane")
                 }
             }
             if gym.phone == nil && gym.website == nil && gym.instagram == nil && gym.facebook == nil {
@@ -167,6 +234,33 @@ struct GymDetailView: View {
                     }
                 }
             }
+        }
+    }
+
+    private var dropInSection: some View {
+        Section {
+            Button {
+                if services.isSignedIn {
+                    showDropIn = true
+                } else {
+                    showSignInHint = true
+                }
+            } label: {
+                Label("dropin.request", systemImage: "figure.martial.arts")
+            }
+        } footer: {
+            Text("dropin.footer")
+        }
+    }
+
+    @MainActor
+    private func toggleFollowGym() async {
+        let newValue = !isFollowingGym
+        isFollowingGym = newValue
+        do {
+            try await services.contributions.setFollowGym(gym.id, following: newValue)
+        } catch {
+            isFollowingGym = !newValue
         }
     }
 

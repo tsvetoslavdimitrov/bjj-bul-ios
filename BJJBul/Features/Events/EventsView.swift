@@ -1,6 +1,51 @@
 import SwiftUI
 
+/// Events tab: competitions (Smoothcomp) and community open mats.
 struct EventsView: View {
+    enum Segment: String, CaseIterable, Hashable {
+        case competitions, openMats
+
+        var localizedKey: LocalizedStringKey {
+            switch self {
+            case .competitions: return "events.segment.competitions"
+            case .openMats: return "events.segment.openMats"
+            }
+        }
+    }
+
+    @State private var segment: Segment = .competitions
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                Picker("events.segment", selection: $segment) {
+                    ForEach(Segment.allCases, id: \.self) { item in
+                        Text(item.localizedKey).tag(item)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                switch segment {
+                case .competitions:
+                    CompetitionsListContent()
+                case .openMats:
+                    OpenMatsListContent()
+                }
+            }
+            .navigationTitle("tab.events")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(for: CompetitionEvent.self) { event in
+                EventDetailView(event: event)
+            }
+            .navigationDestination(for: Gym.self) { gym in
+                GymDetailView(gym: gym)
+            }
+        }
+    }
+}
+
+struct CompetitionsListContent: View {
     @Environment(AppServices.self) private var services
     @State private var events: [CompetitionEvent] = []
     @State private var isLoading = true
@@ -23,7 +68,6 @@ struct EventsView: View {
     }
 
     var body: some View {
-        NavigationStack {
             List {
                 ForEach(sections, id: \.key) { section in
                     Section(section.title) {
@@ -51,17 +95,12 @@ struct EventsView: View {
                     ContentUnavailableView("events.empty", systemImage: "calendar.badge.exclamationmark")
                 }
             }
-            .navigationTitle("tab.events")
-            .navigationDestination(for: CompetitionEvent.self) { event in
-                EventDetailView(event: event)
-            }
             .refreshable {
                 await load()
             }
             .task {
                 await load()
             }
-        }
     }
 
     @MainActor

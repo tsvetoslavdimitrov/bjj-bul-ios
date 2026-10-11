@@ -5,6 +5,8 @@ struct PostListView<Header: View>: View {
     @Environment(AppServices.self) private var services
     /// Changing this reloads from the first page.
     let reloadKey: String
+    /// Optional quotes inserted every `quoteInterval` posts.
+    var quotes: [Quote] = []
     let load: (_ before: String?) async throws -> [Post]
     @ViewBuilder let header: () -> Header
 
@@ -17,6 +19,7 @@ struct PostListView<Header: View>: View {
     @State private var deleteTarget: UUID?
 
     private let pageSize = 20
+    private let quoteInterval = 8
 
     var body: some View {
         ScrollView {
@@ -26,7 +29,7 @@ struct PostListView<Header: View>: View {
                     ContentUnavailableView("feed.empty", systemImage: "text.bubble")
                         .padding(.top, 40)
                 }
-                ForEach(posts) { post in
+                ForEach(Array(posts.enumerated()), id: \.element.id) { index, post in
                     PostCardView(
                         post: post,
                         isMine: post.authorId == services.currentUser?.id,
@@ -42,6 +45,12 @@ struct PostListView<Header: View>: View {
                         }
                     }
                     Divider()
+                    if (index + 1) % quoteInterval == 0,
+                       let quote = QuotePicker.quote(quotes, slot: index / quoteInterval) {
+                        QuoteCardView(quote: quote)
+                            .padding()
+                        Divider()
+                    }
                 }
                 if isLoading {
                     ProgressView().padding()

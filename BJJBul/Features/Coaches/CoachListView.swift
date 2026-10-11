@@ -1,6 +1,7 @@
 import SwiftUI
 
-struct CoachListView: View {
+/// Coach directory list (embedded in Explore's NavigationStack).
+struct CoachListContent: View {
     @Environment(AppServices.self) private var services
     @State private var coaches: [Coach] = []
     @State private var searchText = ""
@@ -18,7 +19,6 @@ struct CoachListView: View {
     }
 
     var body: some View {
-        NavigationStack {
             List(filtered) { coach in
                 NavigationLink(value: coach) {
                     CoachRowView(coach: coach)
@@ -29,7 +29,6 @@ struct CoachListView: View {
                     ContentUnavailableView("coaches.empty", systemImage: "person.2.slash")
                 }
             }
-            .navigationTitle("tab.coaches")
             .searchable(text: $searchText)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -47,17 +46,10 @@ struct CoachListView: View {
                     }
                 }
             }
-            .navigationDestination(for: Coach.self) { coach in
-                CoachDetailView(coach: coach)
-            }
-            .navigationDestination(for: Gym.self) { gym in
-                GymDetailView(gym: gym)
-            }
             .task {
                 coaches = (try? await services.coaches.coaches()) ?? []
                 isLoading = false
             }
-        }
     }
 }
 

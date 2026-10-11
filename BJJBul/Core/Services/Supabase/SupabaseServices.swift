@@ -46,7 +46,14 @@ struct SupabaseGymService: GymService {
     /// (e.g. PGRST205), falls back to the plain gyms table without coordinates.
     private func fetchGyms(cityId: UUID?, id: UUID?) async throws -> [GymRow] {
         do {
-            return try await query(table: "gyms_with_coords", columns: gymColumns + ",lat,lng", cityId: cityId, id: id)
+            do {
+                return try await query(table: "gyms_with_coords",
+                                       columns: gymColumns + ",lat,lng,instagram_embed_url,rating_avg,rating_count",
+                                       cityId: cityId, id: id)
+            } catch {
+                // View from before 0007 (no rating / embed columns).
+                return try await query(table: "gyms_with_coords", columns: gymColumns + ",lat,lng", cityId: cityId, id: id)
+            }
         } catch {
             return try await query(table: "gyms", columns: gymColumns, cityId: cityId, id: id)
         }

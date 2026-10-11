@@ -1,0 +1,47 @@
+import Foundation
+
+/// Same lines as the quotes seed in migration 0007 (used as offline / mock fallback).
+enum MockQuoteData {
+    static let quotes: [Quote] = [
+        Quote(id: UUID(), textEn: "Always assume that your opponent is going to be bigger, stronger and faster than you.", textBg: "Винаги приемай, че противникът ти ще е по-голям, по-силен и по-бърз от теб.", author: "Hélio Gracie"),
+        Quote(id: UUID(), textEn: "Flow with the go.", textBg: "Следвай потока.", author: "Rickson Gracie"),
+        Quote(id: UUID(), textEn: "Be water, my friend.", textBg: "Бъди вода, приятелю.", author: "Bruce Lee"),
+        Quote(id: UUID(), textEn: "I fear not the man who has practiced 10,000 kicks once, but I fear the man who has practiced one kick 10,000 times.", textBg: "Не се страхувам от човека, който е упражнил 10 000 ритника по веднъж, а от онзи, който е упражнил един ритник 10 000 пъти.", author: "Bruce Lee"),
+        Quote(id: UUID(), textEn: "I hated every minute of training, but I said, \"Don't quit. Suffer now and live the rest of your life as a champion.\"", textBg: "Мразех всяка минута от тренировките, но си казвах: „Не се отказвай. Страдай сега и живей остатъка от живота си като шампион.“", author: "Muhammad Ali"),
+        Quote(id: UUID(), textEn: "Maximum efficiency, minimum effort.", textBg: "Максимална ефективност с минимално усилие.", author: "Jigoro Kano"),
+        Quote(id: UUID(), textEn: "Everyone has a plan until they get punched in the mouth.", textBg: "Всеки има план, докато не го ударят в устата.", author: "Mike Tyson"),
+        Quote(id: UUID(), textEn: "A black belt is a white belt who never quit.", textBg: "Черният колан е бял колан, който никога не се е отказал.", author: nil),
+        Quote(id: UUID(), textEn: "There is no losing in jiu-jitsu. You either win or you learn.", textBg: "В джиу-джицу няма загуба. Или печелиш, или се учиш.", author: nil),
+        Quote(id: UUID(), textEn: "Tap early, tap often, train tomorrow.", textBg: "Предавай се навреме, предавай се често, тренирай и утре.", author: nil),
+        Quote(id: UUID(), textEn: "The mat doesn't care about your excuses.", textBg: "Татамито не се интересува от извиненията ти.", author: nil),
+        Quote(id: UUID(), textEn: "Position before submission.", textBg: "Първо позиция, после предаване.", author: nil),
+        Quote(id: UUID(), textEn: "Show up. That's half the technique.", textBg: "Ела на тренировка. Това е половината техника.", author: nil),
+        Quote(id: UUID(), textEn: "Every roll is a conversation. Listen.", textBg: "Всяка борба е разговор. Слушай.", author: nil),
+        Quote(id: UUID(), textEn: "Breathe. Frame. Escape.", textBg: "Дишай. Рамкирай. Излез.", author: nil),
+        Quote(id: UUID(), textEn: "Comfort in bad positions is a superpower.", textBg: "Да си спокоен в лоша позиция е суперсила.", author: nil),
+        Quote(id: UUID(), textEn: "Small progress is still progress.", textBg: "Малкият прогрес пак е прогрес.", author: nil),
+        Quote(id: UUID(), textEn: "Leave your ego at the door, not your effort.", textBg: "Остави егото на вратата, не усилието.", author: nil),
+        Quote(id: UUID(), textEn: "Today's white belt is tomorrow's training partner you'll be proud of.", textBg: "Днешният бял колан е утрешният партньор, с когото ще се гордееш.", author: nil),
+        Quote(id: UUID(), textEn: "Drill it until you can't get it wrong.", textBg: "Повтаряй, докато не можеш да го сбъркаш.", author: nil),
+        Quote(id: UUID(), textEn: "Your hardest rounds build your easiest days.", textBg: "Най-тежките ти рундове изграждат най-леките ти дни.", author: nil),
+        Quote(id: UUID(), textEn: "The guard is a place to attack, not to rest.", textBg: "Гардът е място за атака, не за почивка.", author: nil),
+        Quote(id: UUID(), textEn: "Patience wins more matches than strength.", textBg: "Търпението печели повече мачове от силата.", author: nil),
+        Quote(id: UUID(), textEn: "Be the partner you want to train with.", textBg: "Бъди партньорът, с когото би искал да тренираш.", author: nil),
+        Quote(id: UUID(), textEn: "Consistency beats intensity.", textBg: "Постоянството побеждава интензивността.", author: nil),
+        Quote(id: UUID(), textEn: "Every expert was once pinned under side control.", textBg: "Всеки експерт някога е бил притиснат в странично задържане.", author: nil),
+        Quote(id: UUID(), textEn: "Lose the round, win the lesson.", textBg: "Загуби рунда, спечели урока.", author: nil),
+        Quote(id: UUID(), textEn: "Technique is how the small win against the strong.", textBg: "Техниката е начинът малкият да победи силния.", author: nil),
+        Quote(id: UUID(), textEn: "Don't count the stripes. Count the mat hours.", textBg: "Не брой лентите. Брой часовете на татамито.", author: nil),
+        Quote(id: UUID(), textEn: "Calm is a skill. Train it.", textBg: "Спокойствието е умение. Тренирай го.", author: nil),
+        Quote(id: UUID(), textEn: "The submission comes to those who wait in the right position.", textBg: "Предаването идва при онези, които чакат в правилната позиция.", author: nil),
+        Quote(id: UUID(), textEn: "You don't have to be great to start, but you have to start to be great.", textBg: "Не е нужно да си велик, за да започнеш, но трябва да започнеш, за да станеш велик.", author: nil),
+        Quote(id: UUID(), textEn: "Respect your partner. Without them, there is no training.", textBg: "Уважавай партньора си. Без него няма тренировка.", author: nil),
+        Quote(id: UUID(), textEn: "One more round.", textBg: "Още един рунд.", author: nil),
+        Quote(id: UUID(), textEn: "Defense first. Everything else follows.", textBg: "Първо защитата. Всичко останало идва след това.", author: nil),
+        Quote(id: UUID(), textEn: "A bad day on the mat beats a good day on the couch.", textBg: "Лош ден на татамито е по-добър от добър ден на дивана.", author: nil),
+        Quote(id: UUID(), textEn: "Make the technique work, then make it beautiful.", textBg: "Накарай техниката да работи, после я направи красива.", author: nil),
+        Quote(id: UUID(), textEn: "Bulgaria rolls together.", textBg: "България тренира заедно.", author: nil),
+        Quote(id: UUID(), textEn: "Fall seven times, recover guard eight.", textBg: "Падни седем пъти, възстанови гарда осем.", author: nil),
+        Quote(id: UUID(), textEn: "Rest between rounds, not instead of them.", textBg: "Почивай между рундовете, не вместо тях.", author: nil)
+    ]
+}

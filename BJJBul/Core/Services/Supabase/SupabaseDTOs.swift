@@ -38,6 +38,9 @@ struct GymRow: Decodable {
     let owner_user_id: UUID?
     let lat: Double?
     let lng: Double?
+    let instagram_embed_url: String?
+    let rating_avg: Double?
+    let rating_count: Int?
 
     /// True when the gym has real coordinates (otherwise hide it from the map).
     var hasLocation: Bool { lat != nil && lng != nil }
@@ -52,7 +55,9 @@ struct GymRow: Decodable {
             priceDropIn: price_drop_in, priceMonthly: price_monthly, priceKids: price_kids,
             currency: currency ?? "EUR", hasKids: has_kids ?? false,
             hasWomenOnly: has_women_only ?? false, verified: verified,
-            lastVerifiedAt: nil, ownerUserId: owner_user_id, claimStatus: .none)
+            lastVerifiedAt: nil, ownerUserId: owner_user_id, claimStatus: .none,
+            instagramEmbedURL: instagram_embed_url.flatMap { URL(string: $0) },
+            ratingAverage: rating_avg, ratingCount: rating_count ?? 0)
     }
 }
 

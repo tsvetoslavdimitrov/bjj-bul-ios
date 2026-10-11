@@ -52,3 +52,43 @@ protocol EventService {
     /// Upcoming events (ending today or later), soonest first.
     func upcomingEvents() async throws -> [CompetitionEvent]
 }
+
+protocol ReviewService {
+    func reviews(gymId: UUID) async throws -> [GymReview]
+    /// Creates or replaces the signed-in user's review for the gym.
+    func saveReview(gymId: UUID, rating: Int, body: String) async throws
+    func deleteReview(id: UUID) async throws
+}
+
+protocol OpenMatService {
+    func upcomingOpenMats() async throws -> [OpenMat]
+    func createOpenMat(_ draft: OpenMatDraft) async throws
+    func deleteOpenMat(id: UUID) async throws
+}
+
+protocol ContributionService {
+    func submitGym(_ draft: GymSubmissionDraft) async throws
+    func submitDropIn(_ draft: DropInDraft) async throws
+    func myDropInRequests() async throws -> [DropInRequest]
+    func isFollowingGym(_ gymId: UUID) async throws -> Bool
+    func setFollowGym(_ gymId: UUID, following: Bool) async throws
+}
+
+protocol TrainingService {
+    func sessions() async throws -> [TrainingSession]
+    /// Insert or update by id.
+    func save(_ session: TrainingSession) async throws
+    func delete(id: UUID) async throws
+}
+
+protocol NotificationService {
+    func notifications() async throws -> [AppNotification]
+    func markAllRead() async throws
+    func preferences() async throws -> NotificationPreferences
+    func savePreferences(_ preferences: NotificationPreferences) async throws
+    func registerDevice(token: String, environment: String) async throws
+}
+
+protocol QuoteService {
+    func quotes() async throws -> [Quote]
+}

@@ -13,6 +13,11 @@ struct SignInView: View {
     var body: some View {
         Form {
             Section {
+                LogoHeader()
+            }
+            .listRowBackground(Color.clear)
+
+            Section {
                 SignInWithAppleButton(.signIn) { request in
                     let raw = Nonce.random()
                     nonce = raw

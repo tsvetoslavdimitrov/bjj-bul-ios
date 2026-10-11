@@ -122,7 +122,8 @@ struct SupabaseSocialService: SocialService {
     func report(_ target: ReportTarget, reason: ReportReason) async throws {
         let uid = try await userId()
         let row = ReportInsert(reporter_id: uid, post_id: target.postId, comment_id: target.commentId,
-                               reported_user_id: target.userId, reason: reason.rawValue)
+                               reported_user_id: target.userId, review_id: target.reviewId,
+                               reason: reason.rawValue)
         try await client.from("reports")
             .insert(row)
             .execute()
@@ -206,6 +207,7 @@ struct ReportInsert: Encodable {
     let post_id: UUID?
     let comment_id: UUID?
     let reported_user_id: UUID?
+    let review_id: UUID?
     let reason: String
 }
 

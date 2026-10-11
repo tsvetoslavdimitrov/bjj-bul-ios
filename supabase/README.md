@@ -39,3 +39,6 @@ Moderation: review the `reports` table in the dashboard. Apple expects action on
 
 ## 0006 events
 `0006_events.sql` creates `public.events` (public read; writes only with the service role) and seeds the Bulgarian events listed on Smoothcomp on 2026-10-11. See `docs/EVENTS.md` and `scripts/sync_events.py`.
+
+## 0007 – community features
+Paste `migrations/0007_community.sql` (also at `/workspace/bjj-bul-0007.sql`) into the SQL Editor. Safe to re-run. Adds reviews, gym submissions (+ `approve_gym_submission`), open mats, drop-in requests, private training log, gym follows, notifications (+ outbox, device tokens), Instagram embed URL and motivational `quotes`. Push delivery: see `docs/PUSH.md`.

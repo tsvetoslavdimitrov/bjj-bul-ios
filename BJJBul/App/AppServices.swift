@@ -10,6 +10,12 @@ final class AppServices {
     let auth: AuthService
     let social: SocialService
     let events: EventService
+    let reviews: ReviewService
+    let openMats: OpenMatService
+    let contributions: ContributionService
+    let training: TrainingService
+    let notifications: NotificationService
+    let quotes: QuoteService
 
     var currentUser: AppUser?
     var favoriteGymIds: Set<UUID> = []
@@ -23,13 +29,21 @@ final class AppServices {
     }
 
     init(gyms: GymService, coaches: CoachService, users: UserService, auth: AuthService,
-         social: SocialService, events: EventService) {
+         social: SocialService, events: EventService, reviews: ReviewService,
+         openMats: OpenMatService, contributions: ContributionService,
+         training: TrainingService, notifications: NotificationService, quotes: QuoteService) {
         self.gyms = gyms
         self.coaches = coaches
         self.users = users
         self.auth = auth
         self.social = social
         self.events = events
+        self.reviews = reviews
+        self.openMats = openMats
+        self.contributions = contributions
+        self.training = training
+        self.notifications = notifications
+        self.quotes = quotes
     }
 
     @MainActor
@@ -52,7 +66,13 @@ final class AppServices {
             users: SupabaseUserService(client: client),
             auth: SupabaseAuthService(client: client),
             social: SupabaseSocialService(client: client),
-            events: SupabaseEventService(client: client)
+            events: SupabaseEventService(client: client),
+            reviews: SupabaseReviewService(client: client),
+            openMats: SupabaseOpenMatService(client: client),
+            contributions: SupabaseContributionService(client: client),
+            training: SupabaseTrainingService(client: client),
+            notifications: SupabaseNotificationService(client: client),
+            quotes: SupabaseQuoteService(client: client)
         )
     }()
 
@@ -62,6 +82,12 @@ final class AppServices {
         users: MockUserService(),
         auth: MockAuthService(),
         social: MockSocialService(),
-        events: MockEventService()
+        events: MockEventService(),
+        reviews: MockReviewService(),
+        openMats: MockOpenMatService(),
+        contributions: MockContributionService(),
+        training: MockTrainingService(),
+        notifications: MockNotificationService(),
+        quotes: MockQuoteService()
     )
 }

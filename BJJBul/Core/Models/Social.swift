@@ -71,6 +71,7 @@ struct ReportTarget: Identifiable {
     var postId: UUID?
     var commentId: UUID?
     var userId: UUID?
+    var reviewId: UUID? = nil
 }
 
 enum DateParsing {
@@ -89,5 +90,41 @@ enum DateParsing {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime]
         return formatter.date(from: trimmed) ?? Date()
+    }
+}
+
+struct Quote: Identifiable, Hashable {
+    let id: UUID
+    var textEn: String
+    var textBg: String
+    var author: String?
+
+    /// Bulgarian text when the device language is Bulgarian, otherwise English.
+    var localizedText: String {
+        Locale.current.language.languageCode?.identifier == "bg" ? textBg : textEn
+    }
+
+    var shareText: String {
+        if let author { return "“\(localizedText)” — \(author)" }
+        return "“\(localizedText)”"
+    }
+}
+
+enum QuotePicker {
+    /// Deterministic quote of the day (same for everyone on a given Bulgarian date).
+    static func quoteOfTheDay(_ quotes: [Quote], date: Date = Date()) -> Quote? {
+        guard !quotes.isEmpty else { return nil }
+        let sorted = quotes.sorted { $0.textEn < $1.textEn }
+        let calendar = Calendar.bulgaria
+        let day = calendar.ordinality(of: .day, in: .era, for: date) ?? 0
+        return sorted[day % sorted.count]
+    }
+
+    /// Quote shown after the n-th block of posts (offset from the quote of the day).
+    static func quote(_ quotes: [Quote], slot: Int, date: Date = Date()) -> Quote? {
+        guard !quotes.isEmpty else { return nil }
+        let sorted = quotes.sorted { $0.textEn < $1.textEn }
+        let day = Calendar.bulgaria.ordinality(of: .day, in: .era, for: date) ?? 0
+        return sorted[(day + 7 * (slot + 1)) % sorted.count]
     }
 }
