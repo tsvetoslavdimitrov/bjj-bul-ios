@@ -92,3 +92,8 @@ protocol NotificationService {
 protocol QuoteService {
     func quotes() async throws -> [Quote]
 }
+
+protocol AIChatService {
+    func send(message: String, conversationId: UUID?, locale: String) async throws -> AIChatReply
+    func usage() async throws -> AIUsage
+}

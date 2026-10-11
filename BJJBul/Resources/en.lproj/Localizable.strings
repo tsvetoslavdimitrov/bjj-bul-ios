@@ -273,3 +273,17 @@
 "notifications.pref.events" = "New competitions";
 "notifications.pref.openMats" = "Open mats at gyms I follow";
 "notifications.pref.footer" = "Follow a gym with the bell on its page.";
+
+/* 0008: Ask BJJ */
+"ai.title" = "Ask BJJ";
+"ai.signIn" = "Sign in from the Profile tab to use Ask BJJ.";
+"ai.disclaimer" = "AI answers can be wrong. Not medical advice – see a doctor for injuries. Bulgarian gym and event info comes only from app data.";
+"ai.remaining %lld %lld" = "%lld of %lld messages left today";
+"ai.starters" = "Try asking";
+"ai.placeholder" = "Ask about techniques, rules, gyms…";
+"ai.send" = "Send";
+"ai.newChat" = "New chat";
+"ai.typing" = "Typing…";
+"ai.error.limit" = "You've reached today's limit. Try again tomorrow.";
+"ai.error.notConfigured" = "Ask BJJ isn't set up on the server yet.";
+"ai.error.failed" = "Something went wrong. Please try again.";

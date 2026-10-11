@@ -444,3 +444,58 @@ struct QuoteRow: Decodable {
     let text_bg: String
     let author: String?
 }
+
+// MARK: - Ask BJJ (Edge Function "ask-bjj")
+
+struct AskBJJRequest: Encodable {
+    let message: String?
+    let conversation_id: String?
+    let locale: String?
+    let action: String?
+}
+
+struct AskBJJResponse: Decodable {
+    let reply: String?
+    let conversation_id: String?
+    let remaining: Int?
+    let limit: Int?
+}
+
+struct SupabaseAIChatService: AIChatService {
+    let client: SupabaseClient
+
+    func send(message: String, conversationId: UUID?, locale: String) async throws -> AIChatReply {
+        let body = AskBJJRequest(message: message, conversation_id: conversationId?.uuidString,
+                                 locale: locale, action: nil)
+        let response = try await invoke(body)
+        return AIChatReply(text: response.reply ?? "",
+                           conversationId: response.conversation_id.flatMap { UUID(uuidString: $0) },
+                           remaining: response.remaining ?? 0,
+                           limit: response.limit ?? 0)
+    }
+
+    func usage() async throws -> AIUsage {
+        let response = try await invoke(AskBJJRequest(message: nil, conversation_id: nil, locale: nil, action: "usage"))
+        return AIUsage(remaining: response.remaining ?? 0, limit: response.limit ?? 0)
+    }
+
+    private func invoke(_ body: AskBJJRequest) async throws -> AskBJJResponse {
+        do {
+            let response: AskBJJResponse = try await client.functions.invoke(
+                "ask-bjj",
+                options: FunctionInvokeOptions(body: body)
+            )
+            return response
+        } catch let error as FunctionsError {
+            if case .httpError(let code, _) = error {
+                switch code {
+                case 429: throw AIChatError.dailyLimit
+                case 401: throw AIChatError.unauthorized
+                case 503: throw AIChatError.notConfigured
+                default: throw AIChatError.failed("HTTP \(code)")
+                }
+            }
+            throw AIChatError.failed(error.localizedDescription)
+        }
+    }
+}

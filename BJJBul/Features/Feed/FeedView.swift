@@ -49,6 +49,14 @@ struct FeedView: View {
                     }
                     .accessibilityLabel(Text("notifications.title"))
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        AskBJJView()
+                    } label: {
+                        Image(systemName: "sparkles")
+                    }
+                    .accessibilityLabel(Text("ai.title"))
+                }
                 if services.isSignedIn {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {

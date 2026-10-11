@@ -121,3 +121,22 @@ final class MockNotificationService: NotificationService {
 struct MockQuoteService: QuoteService {
     func quotes() async throws -> [Quote] { MockQuoteData.quotes }
 }
+
+final class MockAIChatService: AIChatService {
+    private var used = 0
+    private let limit = 30
+
+    func send(message: String, conversationId: UUID?, locale: String) async throws -> AIChatReply {
+        guard used < limit else { throw AIChatError.dailyLimit }
+        used += 1
+        try? await Task.sleep(nanoseconds: 900_000_000)
+        let text = locale == "bg"
+            ? "(Демо отговор) Добър въпрос! Свържи Supabase и функцията ask-bjj за истински отговори."
+            : "(Demo reply) Good question! Connect Supabase and the ask-bjj function for real answers."
+        return AIChatReply(text: text, conversationId: conversationId ?? UUID(), remaining: limit - used, limit: limit)
+    }
+
+    func usage() async throws -> AIUsage {
+        AIUsage(remaining: limit - used, limit: limit)
+    }
+}

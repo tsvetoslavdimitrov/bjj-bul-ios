@@ -48,6 +48,11 @@ struct ProfileView: View {
 
             Section {
                 NavigationLink {
+                    AskBJJView()
+                } label: {
+                    Label("ai.title", systemImage: "sparkles")
+                }
+                NavigationLink {
                     MyRequestsView()
                 } label: {
                     Label("dropin.myRequests", systemImage: "tray")
