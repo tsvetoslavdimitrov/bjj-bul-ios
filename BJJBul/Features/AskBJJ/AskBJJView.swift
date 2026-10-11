@@ -9,6 +9,7 @@ struct AskBJJView: View {
     @State private var isSending = false
     @State private var usage: AIUsage?
     @State private var errorMessage: String?
+    @State private var confirmDeleteHistory = false
 
     private var isBulgarian: Bool {
         Locale.current.language.languageCode?.identifier == "bg"
@@ -42,6 +43,24 @@ struct AskBJJView: View {
                     }
                     .accessibilityLabel(Text("ai.newChat"))
                 }
+            }
+        }
+        .toolbar {
+            if services.isSignedIn {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button("ai.deleteHistory", role: .destructive) {
+                            confirmDeleteHistory = true
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                }
+            }
+        }
+        .confirmationDialog("ai.deleteHistory.confirm", isPresented: $confirmDeleteHistory, titleVisibility: .visible) {
+            Button("ai.deleteHistory", role: .destructive) {
+                Task { await deleteHistory() }
             }
         }
         .task(id: services.isSignedIn) {
@@ -145,6 +164,19 @@ struct AskBJJView: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
+    }
+
+    @MainActor
+    private func deleteHistory() async {
+        guard let history = services.ai as? AIHistoryService else { return }
+        do {
+            try await history.deleteAllConversations()
+            messages = []
+            conversationId = nil
+            errorMessage = nil
+        } catch {
+            errorMessage = AIChatError.failed(error.localizedDescription).errorDescription
+        }
     }
 
     @MainActor

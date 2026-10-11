@@ -97,3 +97,7 @@ protocol AIChatService {
     func send(message: String, conversationId: UUID?, locale: String) async throws -> AIChatReply
     func usage() async throws -> AIUsage
 }
+
+protocol AIHistoryService {
+    func deleteAllConversations() async throws
+}

@@ -140,3 +140,7 @@ final class MockAIChatService: AIChatService {
         AIUsage(remaining: limit - used, limit: limit)
     }
 }
+
+extension MockAIChatService: AIHistoryService {
+    func deleteAllConversations() async throws {}
+}

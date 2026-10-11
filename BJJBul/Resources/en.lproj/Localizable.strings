@@ -287,3 +287,5 @@
 "ai.error.limit" = "You've reached today's limit. Try again tomorrow.";
 "ai.error.notConfigured" = "Ask BJJ isn't set up on the server yet.";
 "ai.error.failed" = "Something went wrong. Please try again.";
+"ai.deleteHistory" = "Delete history";
+"ai.deleteHistory.confirm" = "Delete all your Ask BJJ conversations?";

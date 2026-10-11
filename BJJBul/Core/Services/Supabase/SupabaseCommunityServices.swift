@@ -499,3 +499,14 @@ struct SupabaseAIChatService: AIChatService {
         }
     }
 }
+
+extension SupabaseAIChatService: AIHistoryService {
+    /// RLS "ai conversations own delete" limits this to the signed-in user; messages cascade.
+    func deleteAllConversations() async throws {
+        let uid = try await client.auth.session.user.id
+        try await client.from("ai_conversations")
+            .delete()
+            .eq("user_id", value: uid.uuidString)
+            .execute()
+    }
+}
