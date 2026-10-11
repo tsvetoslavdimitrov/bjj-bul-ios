@@ -109,9 +109,12 @@ struct SignInView: View {
 
             if let errorMessage {
                 Section {
-                    Text(errorMessage).foregroundStyle(.red)
-                    Button("auth.dismissError") { errorMessage = nil }
-                        .font(.footnote)
+                    Text(verbatim: errorMessage).foregroundStyle(.red)
+                    Button {
+                        self.errorMessage = nil
+                    } label: {
+                        Text("auth.dismissError").font(.footnote)
+                    }
                 }
             }
 
