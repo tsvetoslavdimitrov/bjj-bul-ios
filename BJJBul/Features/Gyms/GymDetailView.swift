@@ -10,6 +10,8 @@ struct GymDetailView: View {
     @State private var showDropIn = false
     @State private var isFollowingGym = false
     @State private var showSignInHint = false
+    @State private var showClaim = false
+    @State private var joinMessage: String?
 
     private var isFavorite: Bool { services.favoriteGymIds.contains(gym.id) }
     private var hasPrices: Bool { gym.priceDropIn != nil || gym.priceMonthly != nil || gym.priceKids != nil }
@@ -80,6 +82,9 @@ struct GymDetailView: View {
         }
         .sheet(isPresented: $showFixLocation) {
             FixLocationView(gym: gym)
+        }
+        .sheet(isPresented: $showClaim) {
+            ClaimGymView(preselectedGymId: gym.id)
         }
         .sheet(isPresented: $showDropIn) {
             DropInRequestView(gym: gym, schedule: schedule)
@@ -248,8 +253,39 @@ struct GymDetailView: View {
             } label: {
                 Label("dropin.request", systemImage: "figure.martial.arts")
             }
+            Button {
+                if services.isSignedIn {
+                    Task { await requestJoin() }
+                } else {
+                    showSignInHint = true
+                }
+            } label: {
+                Label("gym.join", systemImage: "person.badge.plus")
+            }
+            Button {
+                if services.isSignedIn {
+                    showClaim = true
+                } else {
+                    showSignInHint = true
+                }
+            } label: {
+                Label("gym.claim.thisGym", systemImage: "checkmark.shield")
+            }
+            if let joinMessage {
+                Text(joinMessage).font(.footnote).foregroundStyle(.secondary)
+            }
         } footer: {
             Text("dropin.footer")
+        }
+    }
+
+    @MainActor
+    private func requestJoin() async {
+        do {
+            try await services.gymManagement.requestMembership(gymId: gym.id)
+            joinMessage = String(localized: "gym.join.sent")
+        } catch {
+            joinMessage = error.localizedDescription
         }
     }
 

@@ -53,6 +53,9 @@ struct PublicProfile: Identifiable, Hashable {
     var postCount: Int
     var followedByMe: Bool
     var blocked: Bool
+    var team: String? = nil
+    var teamGymId: UUID? = nil
+    var smoothcompProfileURL: URL? = nil
 }
 
 /// Navigation value for a user's public profile.

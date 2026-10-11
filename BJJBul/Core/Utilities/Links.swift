@@ -81,3 +81,18 @@ extension Links {
 extension Gym {
     var hasCoordinates: Bool { latitude != 0 || longitude != 0 }
 }
+
+enum SmoothcompLink {
+    /// Accepts "smoothcomp.com/en/profile/123" style links; returns https://smoothcomp.com/en/profile/<id>.
+    static func normalized(_ text: String) -> URL? {
+        var value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !value.lowercased().hasPrefix("http") { value = "https://" + value }
+        guard let url = URL(string: value), let host = url.host?.lowercased(),
+              host == "smoothcomp.com" || host == "www.smoothcomp.com" else { return nil }
+        let parts = url.pathComponents.filter { $0 != "/" }
+        guard let index = parts.firstIndex(of: "profile"), index + 1 < parts.count else { return nil }
+        let id = parts[index + 1]
+        guard !id.isEmpty, id.allSatisfy({ $0.isNumber }) else { return nil }
+        return URL(string: "https://smoothcomp.com/en/profile/\(id)")
+    }
+}

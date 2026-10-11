@@ -121,6 +121,8 @@ struct ProfileRow: Decodable {
     let smoothcomp_profile_url: String?
     let terms_accepted_at: String?
     let terms_version: String?
+    let team: String?
+    let team_gym_id: UUID?
 
     func toModel(favoriteGymIds: [UUID]) -> AppUser {
         AppUser(id: id, displayName: display_name ?? "",
@@ -131,7 +133,8 @@ struct ProfileRow: Decodable {
                 isPublic: is_public ?? false,
                 smoothcompProfileURL: smoothcomp_profile_url.flatMap { URL(string: $0) },
                 termsAcceptedAt: terms_accepted_at.map { DateParsing.date(from: $0) },
-                termsVersion: terms_version)
+                termsVersion: terms_version,
+                team: team, teamGymId: team_gym_id)
     }
 }
 
@@ -171,4 +174,24 @@ struct SuggestionInsert: Encodable {
     let entity_type: String
     let entity_id: UUID?
     let payload: [String: String]
+}
+
+/// Athlete fields from 0009 (sent separately so older schemas still save the basic profile).
+struct AthleteProfileUpdate: Encodable {
+    let team: String?
+    let teamGymId: UUID?
+    let smoothcompProfileURL: String?
+
+    enum CodingKeys: String, CodingKey {
+        case team
+        case teamGymId = "team_gym_id"
+        case smoothcompProfileURL = "smoothcomp_profile_url"
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(team, forKey: .team)
+        try container.encode(teamGymId, forKey: .teamGymId)
+        try container.encode(smoothcompProfileURL, forKey: .smoothcompProfileURL)
+    }
 }

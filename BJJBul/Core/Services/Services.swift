@@ -101,3 +101,43 @@ protocol AIChatService {
 protocol AIHistoryService {
     func deleteAllConversations() async throws
 }
+
+protocol AthleteService {
+    func record(userId: UUID) async throws -> AthleteRecord?
+    func medals(userId: UUID) async throws -> [AthleteMedal]
+    func addMedal(_ draft: MedalDraft) async throws
+    func deleteMedal(id: UUID) async throws
+    /// Runs the smoothcomp-sync Edge Function for the signed-in user. Returns the status string.
+    func syncSmoothcomp() async throws -> String
+}
+
+protocol GymManagementService {
+    func myGyms() async throws -> [MyGym]
+    func claimGym(_ draft: GymClaimDraft) async throws
+    func requestMembership(gymId: UUID) async throws
+    func redeemInvite(code: String) async throws -> UUID
+    func createInvite(gymId: UUID, role: GymRole, maxUses: Int) async throws -> String
+
+    func roster(gymId: UUID) async throws -> [RosterMember]
+    func setMemberStatus(memberId: UUID, status: MemberStatus) async throws
+    func setMemberMembership(memberId: UUID, membershipId: UUID?) async throws
+    func setMemberRole(memberId: UUID, role: GymRole) async throws
+    func promote(gymId: UUID, userId: UUID, belt: Belt, stripes: Int, note: String, postToFeed: Bool) async throws
+
+    func saveClass(_ item: ClassSchedule, isNew: Bool) async throws
+    func deleteClass(id: UUID) async throws
+    func attendance(gymId: UUID, classId: UUID, date: Date) async throws -> Set<UUID>
+    func checkIn(gymId: UUID, classId: UUID, userId: UUID, date: Date) async throws
+    func undoCheckIn(gymId: UUID, classId: UUID, userId: UUID, date: Date) async throws
+
+    func memberships(gymId: UUID) async throws -> [Membership]
+    func saveMembership(_ membership: Membership, isNew: Bool) async throws
+    func deleteMembership(id: UUID) async throws
+    func paymentStatus(gymId: UUID) async throws -> [PaymentStatusRow]
+    func recordPayment(_ draft: MemberPaymentDraft) async throws
+
+    func subscription(gymId: UUID) async throws -> GymSubscription?
+    func plans() async throws -> [BJJBulPlan]
+    func updateGymProfile(_ draft: GymProfileDraft) async throws
+    func uploadGymPhoto(gymId: UUID, jpegData: Data) async throws -> URL
+}

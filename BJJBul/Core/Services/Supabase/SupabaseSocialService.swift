@@ -267,6 +267,9 @@ struct PublicProfileRow: Decodable {
     let post_count: Int
     let followed_by_me: Bool
     let blocked: Bool
+    let team: String?
+    let team_gym_id: UUID?
+    let smoothcomp_profile_url: String?
 
     func toModel() -> PublicProfile {
         PublicProfile(id: id, displayName: display_name ?? "",
@@ -274,6 +277,8 @@ struct PublicProfileRow: Decodable {
                       belt: belt.flatMap { Belt(rawValue: $0) } ?? .white,
                       stripes: stripes ?? 0, homeGymId: home_gym_id,
                       followerCount: follower_count, followingCount: following_count,
-                      postCount: post_count, followedByMe: followed_by_me, blocked: blocked)
+                      postCount: post_count, followedByMe: followed_by_me, blocked: blocked,
+                      team: team, teamGymId: team_gym_id,
+                      smoothcompProfileURL: smoothcomp_profile_url.flatMap { URL(string: $0) })
     }
 }

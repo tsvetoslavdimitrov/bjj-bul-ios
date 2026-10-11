@@ -55,3 +55,24 @@ These functions are not callable from the app (execute revoked from anon/authent
 
 ## Instagram embed
 To show a gym's latest post, set `gyms.instagram_embed_url` to the post's official embed URL, e.g. `https://www.instagram.com/p/<code>/embed`. Only instagram.com https URLs are rendered. No scraping.
+
+## Gym claims and management (0009)
+Claims: `gym_claims` (filter `status = pending`). Verify the person (call the gym, check Instagram/website, or the contact provided).
+```sql
+select public.admin_approve_gym_claim('<claim id>');   -- owner: sets gyms.owner_user_id, adds member, starts 30-day trial
+select public.admin_reject_gym_claim('<claim id>', 'reason');
+```
+Subscriptions (see docs/PAYMENTS.md):
+```sql
+select public.admin_record_subscription_payment('<gym id>', 19.00, 'revolut', 'reference', 1);
+select public.admin_set_subscription('<gym id>', 'cancelled');            -- or trialing / active / past_due
+select public.admin_set_subscription('<gym id>', 'active', 'pro');        -- change plan
+select public.admin_expire_subscriptions();                                -- mark expired trials/periods past_due
+```
+To give an extra trial: `update gym_subscriptions set status='trialing', trial_ends_at = now() + interval '30 days' where gym_id = '<id>';`
+
+All admin_* functions are revoked from anon/authenticated; run them in the SQL Editor only.
+
+## Athlete medals
+Manual medals (`athlete_medals.source = 'manual'`) are always `verified = false` and labelled "unverified". Remove abusive or fake entries in the Table Editor.
+Smoothcomp sync (`smoothcomp-sync` function) writes `source = 'smoothcomp'`. See docs/SMOOTHCOMP_PROFILES.md.

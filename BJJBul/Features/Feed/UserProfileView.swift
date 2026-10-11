@@ -79,6 +79,11 @@ struct UserProfileView: View {
                             .font(.footnote)
                     }
                 }
+                if let team = profile.team, !team.isEmpty {
+                    Label(team, systemImage: "shield")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
                 HStack(spacing: 24) {
                     stat(profile.postCount, key: "user.posts")
                     stat(profile.followerCount, key: "user.followers")
@@ -100,6 +105,7 @@ struct UserProfileView: View {
                 if let errorMessage {
                     Text(errorMessage).font(.footnote).foregroundStyle(.red)
                 }
+                AthleteRecordCard(userId: profile.id, smoothcompURL: profile.smoothcompProfileURL, isMe: isMe)
             }
             .padding()
             .frame(maxWidth: .infinity)

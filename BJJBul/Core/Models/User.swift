@@ -15,4 +15,7 @@ struct AppUser: Identifiable, Codable, Hashable {
     var smoothcompProfileURL: URL?
     var termsAcceptedAt: Date? = nil
     var termsVersion: String? = nil
+    // Athlete profile (0009)
+    var team: String? = nil
+    var teamGymId: UUID? = nil
 }

@@ -7,9 +7,16 @@ struct ProfileEditView: View {
     @State private var gyms: [Gym] = []
     @State private var isSaving = false
     @State private var errorMessage: String?
+    @State private var smoothcompText: String
+
+    private var smoothcompValid: Bool {
+        let text = smoothcompText.trimmingCharacters(in: .whitespaces)
+        return text.isEmpty || SmoothcompLink.normalized(text) != nil
+    }
 
     init(user: AppUser) {
         _draft = State(initialValue: user)
+        _smoothcompText = State(initialValue: user.smoothcompProfileURL?.absoluteString ?? "")
     }
 
     var body: some View {
@@ -37,6 +44,36 @@ struct ProfileEditView: View {
                     }
                     .pickerStyle(.navigationLink)
                 }
+                Section {
+                    TextField("athlete.team", text: Binding(
+                        get: { draft.team ?? "" },
+                        set: { draft.team = $0 }
+                    ))
+                    Picker("athlete.teamGym", selection: $draft.teamGymId) {
+                        Text("profile.homeGym.none").tag(UUID?.none)
+                        ForEach(gyms) { gym in
+                            Text(gym.name).tag(UUID?.some(gym.id))
+                        }
+                    }
+                    .pickerStyle(.navigationLink)
+                } header: {
+                    Text("athlete.section.team")
+                }
+                Section {
+                    TextField("athlete.smoothcomp.placeholder", text: $smoothcompText)
+                        .keyboardType(.URL)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                    if !smoothcompValid {
+                        Text("athlete.smoothcomp.invalid")
+                            .font(.footnote)
+                            .foregroundStyle(.red)
+                    }
+                } header: {
+                    Text("athlete.smoothcomp")
+                } footer: {
+                    Text("athlete.smoothcomp.footer")
+                }
                 if let errorMessage {
                     Section {
                         Text(errorMessage).foregroundStyle(.red)
@@ -53,7 +90,7 @@ struct ProfileEditView: View {
                     Button("common.save") {
                         Task { await save() }
                     }
-                    .disabled(isSaving)
+                    .disabled(isSaving || !smoothcompValid)
                 }
             }
             .task {
@@ -66,6 +103,8 @@ struct ProfileEditView: View {
     private func save() async {
         isSaving = true
         defer { isSaving = false }
+        let text = smoothcompText.trimmingCharacters(in: .whitespaces)
+        draft.smoothcompProfileURL = text.isEmpty ? nil : SmoothcompLink.normalized(text)
         do {
             try await services.users.update(draft)
             services.currentUser = draft

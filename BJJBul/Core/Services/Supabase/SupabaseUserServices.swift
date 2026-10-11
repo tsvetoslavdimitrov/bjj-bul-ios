@@ -71,6 +71,21 @@ struct SupabaseUserService: UserService {
         try await client.from("profiles")
             .upsert(payload)
             .execute()
+        let athlete = AthleteProfileUpdate(
+            team: user.team.flatMap { $0.isEmpty ? nil : $0 },
+            teamGymId: user.teamGymId,
+            smoothcompProfileURL: user.smoothcompProfileURL?.absoluteString)
+        do {
+            try await client.from("profiles")
+                .update(athlete)
+                .eq("id", value: user.id.uuidString)
+                .execute()
+        } catch {
+            // Before migration 0009 the team columns don't exist; only fail if the user set them.
+            let hasAthleteData = (athlete.team != nil) || (athlete.teamGymId != nil)
+                || (athlete.smoothcompProfileURL != nil)
+            if hasAthleteData { throw error }
+        }
     }
 
     func favoriteGymIds() async throws -> [UUID] {

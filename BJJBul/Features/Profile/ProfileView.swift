@@ -43,7 +43,27 @@ struct ProfileView: View {
                         Text("profile.homeGym.none").foregroundStyle(.secondary)
                     }
                 }
+                if let team = user.team, !team.isEmpty {
+                    HStack {
+                        Text("athlete.team")
+                        Spacer()
+                        Text(team).foregroundStyle(.secondary)
+                    }
+                }
                 Button("profile.edit") { showEditor = true }
+            }
+
+            Section {
+                AthleteRecordCard(userId: user.id, smoothcompURL: user.smoothcompProfileURL, isMe: true)
+                    .listRowInsets(EdgeInsets())
+            }
+
+            Section {
+                NavigationLink {
+                    MyGymListView()
+                } label: {
+                    Label("gym.my", systemImage: "building.columns")
+                }
             }
 
             Section {
