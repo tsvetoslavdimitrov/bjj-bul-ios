@@ -449,3 +449,22 @@
 "subscription.cash" = "В брой: свържи се с нас. Посочи референцията в бележката към плащането.";
 "subscription.contact" = "Връзка за плащания";
 "subscription.billing.footer" = "След като получим плащането, администратор отбелязва абонамента като платен. Това може да отнеме до 2 работни дни.";
+
+/* 0010: feed media */
+"composer.media" = "Снимки и видео";
+"composer.media.footer" = "До 4 файла, едно видео (до 60 сек). Видеото се компресира преди качване.";
+"composer.camera" = "Снимай или запиши видео";
+"composer.addVideo" = "Добави видео от галерията";
+"composer.processing" = "Подготвяне…";
+"composer.video.exportFailed" = "Видеото не можа да се обработи.";
+"composer.video.tooLarge" = "Видеото е над 50 MB след компресия. Опитай по-кратко.";
+"composer.video.tooLong" = "Видеото може да е до 60 секунди.";
+"composer.video.onlyOne" = "Само едно видео на публикация.";
+"composer.music" = "Песен";
+"composer.music.placeholder" = "Постави линк от Spotify, Apple Music, YouTube Music или Deezer";
+"composer.music.attach" = "Добави";
+"composer.music.remove" = "Премахни песента";
+"composer.music.unsupported" = "Неподдържан линк. Използвай Spotify, Apple Music, YouTube Music или Deezer.";
+"composer.music.footer" = "Споделя се само като линк – музиката не се добавя към видеото.";
+"post.video.mute" = "Без звук";
+"post.video.unmute" = "Пусни звука";

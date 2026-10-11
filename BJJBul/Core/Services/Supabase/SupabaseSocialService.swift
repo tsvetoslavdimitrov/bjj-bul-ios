@@ -19,12 +19,18 @@ struct SupabaseSocialService: SocialService {
         let rows: [PostRow] = try await client.rpc("get_feed", params: params)
             .execute()
             .value
-        return rows.map { row in
-            row.toModel(mediaURLs: row.media_paths.compactMap { publicURL($0) })
+        return rows.map { row -> Post in
+            var post = row.toModel(mediaURLs: row.media_paths.compactMap { publicURL($0) })
+            if let link = row.music_url, let url = URL(string: link) {
+                post.music = MusicAttachment(url: url, title: row.music_title, artist: row.music_artist,
+                                             artworkURL: row.music_artwork.flatMap { URL(string: $0) })
+            }
+            return post
         }
     }
 
-    func createPost(body: String, type: PostType, gymId: UUID?, images: [Data]) async throws {
+    func createPost(body: String, type: PostType, gymId: UUID?, media: [ComposerMedia],
+                    music: MusicAttachment?) async throws {
         let uid = try await userId()
         let insert = PostInsert(author_id: uid, body: body, type: type.rawValue, gym_id: gymId)
         let created: IdRow = try await client.from("posts")
@@ -33,15 +39,29 @@ struct SupabaseSocialService: SocialService {
             .single()
             .execute()
             .value
+        if let music {
+            // Separate update so posting still works before migration 0010 (music is then dropped).
+            let update = MusicUpdate(music_url: music.url.absoluteString, music_title: music.title,
+                                     music_artist: music.artist, music_artwork: music.artworkURL?.absoluteString)
+            try? await client.from("posts").update(update).eq("id", value: created.id.uuidString).execute()
+        }
         // Storage policy requires the first folder to be the user's id (lowercase).
         let folder = "\(uid.uuidString.lowercased())/\(created.id.uuidString.lowercased())"
-        for (index, data) in images.prefix(4).enumerated() {
-            let path = "\(folder)/\(index).jpg"
+        for (index, item) in media.prefix(4).enumerated() {
+            let isVideo = item.kind == .video
+            let path = "\(folder)/\(index).\(isVideo ? "mp4" : "jpg")"
             _ = try await client.storage.from(bucket)
-                .upload(path, data: data, options: FileOptions(contentType: "image/jpeg"))
-            try await client.from("post_media")
-                .insert(MediaInsert(post_id: created.id, storage_path: path, position: index))
-                .execute()
+                .upload(path, data: item.data,
+                        options: FileOptions(contentType: isVideo ? "video/mp4" : "image/jpeg"))
+            if isVideo {
+                try await client.from("post_media")
+                    .insert(MediaKindInsert(post_id: created.id, storage_path: path, position: index, kind: "video"))
+                    .execute()
+            } else {
+                try await client.from("post_media")
+                    .insert(MediaInsert(post_id: created.id, storage_path: path, position: index))
+                    .execute()
+            }
         }
     }
 
@@ -226,6 +246,11 @@ struct PostRow: Decodable {
     let like_count: Int
     let comment_count: Int
     let liked_by_me: Bool
+    // 0010 (absent before the migration)
+    let music_url: String?
+    let music_title: String?
+    let music_artist: String?
+    let music_artwork: String?
 
     func toModel(mediaURLs: [URL]) -> Post {
         Post(id: id, authorId: author_id, authorName: author_name ?? "",
@@ -281,4 +306,18 @@ struct PublicProfileRow: Decodable {
                       team: team, teamGymId: team_gym_id,
                       smoothcompProfileURL: smoothcomp_profile_url.flatMap { URL(string: $0) })
     }
+}
+
+struct MediaKindInsert: Encodable {
+    let post_id: UUID
+    let storage_path: String
+    let position: Int
+    let kind: String
+}
+
+struct MusicUpdate: Encodable {
+    let music_url: String
+    let music_title: String?
+    let music_artist: String?
+    let music_artwork: String?
 }

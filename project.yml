@@ -51,6 +51,8 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_CFBundleDisplayName: BJJ Bul
         INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Used to show BJJ gyms near you."
+        INFOPLIST_KEY_NSCameraUsageDescription: "Used to take photos and record videos for your posts."
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: "Used to record sound in videos for your posts."
         INFOPLIST_KEY_NSCalendarsWriteOnlyAccessUsageDescription: "Used to add competitions and open mats to your calendar."
         TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon

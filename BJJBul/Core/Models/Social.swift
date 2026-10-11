@@ -29,6 +29,7 @@ struct Post: Identifiable, Hashable {
     var likeCount: Int
     var commentCount: Int
     var likedByMe: Bool
+    var music: MusicAttachment? = nil
 }
 
 struct PostComment: Identifiable, Hashable {

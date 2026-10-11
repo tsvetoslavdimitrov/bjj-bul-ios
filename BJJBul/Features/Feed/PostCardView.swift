@@ -19,6 +19,9 @@ struct PostCardView: View {
             if !post.mediaURLs.isEmpty {
                 photos
             }
+            if let music = post.music {
+                MusicCardView(music: music)
+            }
             if let gymName = post.gymName {
                 Label(gymName, systemImage: "mappin.and.ellipse")
                     .font(.footnote)
@@ -83,13 +86,19 @@ struct PostCardView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 ForEach(post.mediaURLs, id: \.self) { url in
-                    AsyncImage(url: url) { image in
-                        image.resizable().scaledToFill()
-                    } placeholder: {
-                        Rectangle().fill(Color.secondary.opacity(0.15))
+                    if Post.isVideoURL(url) {
+                        PostVideoView(url: url)
+                            .frame(width: post.mediaURLs.count == 1 ? 320 : 240, height: 320)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    } else {
+                        AsyncImage(url: url) { image in
+                            image.resizable().scaledToFill()
+                        } placeholder: {
+                            Rectangle().fill(Color.secondary.opacity(0.15))
+                        }
+                        .frame(width: post.mediaURLs.count == 1 ? 320 : 240, height: 240)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
-                    .frame(width: post.mediaURLs.count == 1 ? 320 : 240, height: 240)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
             }
         }

@@ -35,11 +35,12 @@ final class MockSocialService: SocialService {
         }
     }
 
-    func createPost(body: String, type: PostType, gymId: UUID?, images: [Data]) async throws {
+    func createPost(body: String, type: PostType, gymId: UUID?, media: [ComposerMedia],
+                    music: MusicAttachment?) async throws {
         let post = Post(id: UUID(), authorId: MockData.user.id, authorName: MockData.user.displayName,
                         authorAvatarURL: nil, authorBelt: MockData.user.belt, body: body, type: type,
                         gymId: gymId, gymName: nil, createdAt: Date(), cursor: "2026-01-02T00:00:00+00:00",
-                        mediaURLs: [], likeCount: 0, commentCount: 0, likedByMe: false)
+                        mediaURLs: [], likeCount: 0, commentCount: 0, likedByMe: false, music: music)
         posts.insert(post, at: 0)
     }
 

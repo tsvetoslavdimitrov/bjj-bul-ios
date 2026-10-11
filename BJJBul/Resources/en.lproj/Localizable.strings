@@ -449,3 +449,22 @@
 "subscription.cash" = "Cash: contact us to arrange it. Put the reference in the payment note.";
 "subscription.contact" = "Contact billing";
 "subscription.billing.footer" = "After we receive the payment, an admin marks your subscription as paid. This can take up to 2 business days.";
+
+/* 0010: feed media */
+"composer.media" = "Photos & video";
+"composer.media.footer" = "Up to 4 items, one video (max 60 s). Videos are compressed before upload.";
+"composer.camera" = "Take photo or video";
+"composer.addVideo" = "Add video from library";
+"composer.processing" = "Preparing media…";
+"composer.video.exportFailed" = "Couldn't process the video.";
+"composer.video.tooLarge" = "The video is larger than 50 MB after compression. Try a shorter clip.";
+"composer.video.tooLong" = "Videos can be up to 60 seconds.";
+"composer.video.onlyOne" = "Only one video per post.";
+"composer.music" = "Song";
+"composer.music.placeholder" = "Paste a Spotify, Apple Music, YouTube Music or Deezer link";
+"composer.music.attach" = "Attach";
+"composer.music.remove" = "Remove song";
+"composer.music.unsupported" = "Unsupported link. Use Spotify, Apple Music, YouTube Music or Deezer.";
+"composer.music.footer" = "Shared as a link card only – music isn't added to videos.";
+"post.video.mute" = "Mute";
+"post.video.unmute" = "Tap for sound";
