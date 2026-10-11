@@ -95,10 +95,12 @@ struct NotificationSettingsView: View {
             } footer: {
                 Text("notifications.enablePush.footer")
             }
-            Section("notifications.prefs") {
+            Section {
                 Toggle("notifications.pref.events", isOn: $prefs.newEvents)
                 Toggle("notifications.pref.openMats", isOn: $prefs.openMatsFollowed)
-            } footer: {
+            } header: {
+Text("notifications.prefs")
+} footer: {
                 Text("notifications.pref.footer")
             }
             if let errorMessage {

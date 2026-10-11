@@ -53,10 +53,12 @@ struct DropInRequestView: View {
                             TextField("dropin.class", text: $preferredClass)
                         }
                     }
-                    Section("dropin.message") {
+                    Section {
                         TextEditor(text: $message)
                             .frame(minHeight: 100)
-                    } footer: {
+                    } header: {
+Text("dropin.message")
+} footer: {
                         Text("dropin.privacy")
                     }
                     if let errorMessage {

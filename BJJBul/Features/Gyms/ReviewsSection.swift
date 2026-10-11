@@ -155,9 +155,11 @@ struct ReviewEditorView: View {
                     Text(gym.name).font(.headline)
                     StarPicker(rating: $rating)
                 }
-                Section("reviews.text") {
+                Section {
                     TextEditor(text: $text)
                         .frame(minHeight: 140)
+                } header: {
+                    Text("reviews.text")
                 } footer: {
                     Text("reviews.footer")
                 }

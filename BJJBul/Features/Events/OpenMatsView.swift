@@ -250,10 +250,12 @@ struct OpenMatComposerView: View {
                     TextField("openmat.fee", text: $feeText)
                         .keyboardType(.decimalPad)
                 }
-                Section("openmat.notes") {
+                Section {
                     TextEditor(text: $notes)
                         .frame(minHeight: 80)
-                } footer: {
+                } header: {
+Text("openmat.notes")
+} footer: {
                     Text("openmat.verifyNote")
                 }
                 if let errorMessage {
