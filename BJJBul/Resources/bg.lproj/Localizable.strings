@@ -27,10 +27,10 @@
 "common.instagram" = "Instagram";
 "common.facebook" = "Facebook";
 "auth.apple.footer" = "Използваме Apple ID само за вход.";
-"auth.email.title" = "Вход с имейл";
+"auth.email.title" = "Имейл и парола";
 "auth.email.placeholder" = "Имейл";
-"auth.email.send" = "Изпрати код";
-"auth.code.placeholder" = "6-цифрен код";
+"auth.email.send" = "Изпрати ми код";
+"auth.code.placeholder" = "Код от имейла";
 "auth.code.verify" = "Потвърди и влез";
 "auth.code.hint" = "Проверете пощата си за кода или линка за вход.";
 "auth.error.generic" = "Входът не бе успешен. Опитайте отново.";
@@ -766,3 +766,30 @@
 "partner.product.descEn" = "Описание (EN)";
 "partner.product.photos" = "Снимки";
 "partner.product.addPhoto" = "Добави снимка";
+
+/* Auth v2 */
+"auth.mode" = "Режим";
+"auth.mode.signIn" = "Вход";
+"auth.mode.signUp" = "Регистрация";
+"auth.password" = "Парола";
+"auth.password.toggle" = "Покажи/скрий паролата";
+"auth.signIn" = "Влез";
+"auth.signUp" = "Създай профил";
+"auth.password.rules" = "Поне 6 символа.";
+"auth.forgot" = "Забравена парола?";
+"auth.forgot.sent" = "Провери имейла си за линк за нова парола.";
+"auth.signUp.confirm" = "Провери имейла си, за да потвърдиш профила, след това влез.";
+"auth.dismissError" = "Опитай пак";
+"auth.code.title" = "Или влез с еднократен код";
+"auth.code.resend" = "Изпрати нов код";
+"auth.code.resendIn %lld" = "Нов код след %lld с";
+"auth.code.startOver" = "Друг имейл / започни отначало";
+"auth.error.wrongPassword" = "Грешен имейл или парола.";
+"auth.error.notConfirmed" = "Имейлът още не е потвърден. Отвори линка в писмото за потвърждение.";
+"auth.error.rateLimited" = "Твърде много опити. Изчакай минута и опитай пак.";
+"auth.error.codeInvalid" = "Кодът е грешен или е изтекъл. Поискай нов код.";
+"auth.error.exists" = "Вече има профил с този имейл. Влез.";
+"auth.error.weakPassword" = "Паролата е твърде слаба. Използвай поне 6 символа.";
+"auth.error.network" = "Няма връзка. Провери интернета и опитай пак.";
+"auth.password.new" = "Нова парола";
+"auth.password.newTitle" = "Задай нова парола";

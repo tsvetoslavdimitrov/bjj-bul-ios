@@ -27,10 +27,10 @@
 "common.instagram" = "Instagram";
 "common.facebook" = "Facebook";
 "auth.apple.footer" = "We only use your Apple ID to sign you in.";
-"auth.email.title" = "Sign in with email";
+"auth.email.title" = "Email and password";
 "auth.email.placeholder" = "Email";
-"auth.email.send" = "Send code";
-"auth.code.placeholder" = "6-digit code";
+"auth.email.send" = "Email me a code";
+"auth.code.placeholder" = "Code from the email";
 "auth.code.verify" = "Verify and sign in";
 "auth.code.hint" = "Check your inbox for the code or the sign-in link.";
 "auth.error.generic" = "Sign-in failed. Please try again.";
@@ -766,3 +766,30 @@
 "partner.product.descEn" = "Description (English)";
 "partner.product.photos" = "Photos";
 "partner.product.addPhoto" = "Add photo";
+
+/* Auth v2 */
+"auth.mode" = "Mode";
+"auth.mode.signIn" = "Sign in";
+"auth.mode.signUp" = "Create account";
+"auth.password" = "Password";
+"auth.password.toggle" = "Show or hide password";
+"auth.signIn" = "Sign in";
+"auth.signUp" = "Create account";
+"auth.password.rules" = "At least 6 characters.";
+"auth.forgot" = "Forgot password?";
+"auth.forgot.sent" = "Check your email for a link to reset your password.";
+"auth.signUp.confirm" = "Check your email to confirm your account, then sign in.";
+"auth.dismissError" = "Try again";
+"auth.code.title" = "Or sign in with a one-time code";
+"auth.code.resend" = "Send a new code";
+"auth.code.resendIn %lld" = "Send a new code in %lld s";
+"auth.code.startOver" = "Use a different email / start over";
+"auth.error.wrongPassword" = "Wrong email or password.";
+"auth.error.notConfirmed" = "Your email isn't confirmed yet. Open the link in the confirmation email.";
+"auth.error.rateLimited" = "Too many attempts. Wait a minute and try again.";
+"auth.error.codeInvalid" = "The code is wrong or has expired. Request a new code.";
+"auth.error.exists" = "An account with this email already exists. Sign in instead.";
+"auth.error.weakPassword" = "The password is too weak. Use at least 6 characters.";
+"auth.error.network" = "No connection. Check your internet and try again.";
+"auth.password.new" = "New password";
+"auth.password.newTitle" = "Set a new password";

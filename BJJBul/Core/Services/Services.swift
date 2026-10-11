@@ -28,6 +28,13 @@ protocol AuthService {
     func signInWithApple(idToken: String, nonce: String) async throws
     func sendEmailCode(to email: String) async throws
     func verifyEmailCode(email: String, code: String) async throws
+    /// Returns true when a session was created (false = email confirmation required).
+    func signUp(email: String, password: String) async throws -> Bool
+    func signIn(email: String, password: String) async throws
+    func sendPasswordReset(email: String) async throws
+    func updatePassword(_ password: String) async throws
+    /// Handles bjjbul://login links (magic link / recovery). Returns true if it was a password recovery link.
+    func handleAuthURL(_ url: URL) async throws -> Bool
     func signOut() async throws
     func deleteAccount() async throws
 }

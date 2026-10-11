@@ -38,6 +38,10 @@ targets:
         SUPABASE_ANON_KEY: $(SUPABASE_ANON_KEY)
         UIBackgroundModes:
           - remote-notification
+        CFBundleURLTypes:
+          - CFBundleURLName: com.bjjbul.app.auth
+            CFBundleURLSchemes:
+              - bjjbul
     configFiles:
       Debug: Config/Secrets.xcconfig
       Release: Config/Secrets.xcconfig

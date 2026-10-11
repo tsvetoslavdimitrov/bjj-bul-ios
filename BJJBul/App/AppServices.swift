@@ -27,6 +27,8 @@ final class AppServices {
     var favoriteGymIds: Set<UUID> = []
     /// Marketplace cart (order-request products only).
     var cart: [CartItem] = []
+    /// Set after opening a password-recovery link; shows the "new password" sheet.
+    var needsNewPassword = false
 
     var isSignedIn: Bool { currentUser != nil }
 
@@ -118,6 +120,17 @@ final class AppServices {
         reports: MockReportsService(),
         marketplace: MockMarketplaceService()
     )
+
+    /// onOpenURL handler for bjjbul://login (magic link, signup confirmation, password recovery).
+    @MainActor
+    func handleAuthURL(_ url: URL) async {
+        guard url.scheme == "bjjbul" else { return }
+        let isRecovery = (try? await auth.handleAuthURL(url)) ?? false
+        await refreshSession()
+        if isRecovery && isSignedIn {
+            needsNewPassword = true
+        }
+    }
 
     // MARK: Cart
 

@@ -37,6 +37,14 @@ final class MockAuthService: AuthService {
     func sendEmailCode(to email: String) async throws {}
     func verifyEmailCode(email: String, code: String) async throws { signedIn = true }
     func signOut() async throws { signedIn = false }
+    func signUp(email: String, password: String) async throws -> Bool {
+        signedIn = true
+        return true
+    }
+    func signIn(email: String, password: String) async throws { signedIn = true }
+    func sendPasswordReset(email: String) async throws {}
+    func updatePassword(_ password: String) async throws {}
+    func handleAuthURL(_ url: URL) async throws -> Bool { false }
     func deleteAccount() async throws { signedIn = false }
 }
 

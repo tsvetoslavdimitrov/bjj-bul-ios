@@ -19,6 +19,16 @@ struct BJJBulApp: App {
                     PushManager.shared.services = services
                     await PushManager.shared.refreshRegistrationIfAuthorized()
                 }
+                .onOpenURL { url in
+                    Task { await services.handleAuthURL(url) }
+                }
+                .sheet(isPresented: Binding(
+                    get: { services.needsNewPassword },
+                    set: { services.needsNewPassword = $0 }
+                )) {
+                    NewPasswordView()
+                        .environment(services)
+                }
                 .onChange(of: services.isSignedIn) { _, signedIn in
                     if signedIn {
                         Task { await PushManager.shared.uploadPendingToken() }

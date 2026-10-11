@@ -212,6 +212,11 @@ final class DemoAuthService: AuthService {
     func signInWithApple(idToken: String, nonce: String) async throws {}
     func sendEmailCode(to email: String) async throws {}
     func verifyEmailCode(email: String, code: String) async throws {}
+    func signUp(email: String, password: String) async throws -> Bool { true }
+    func signIn(email: String, password: String) async throws {}
+    func sendPasswordReset(email: String) async throws {}
+    func updatePassword(_ password: String) async throws {}
+    func handleAuthURL(_ url: URL) async throws -> Bool { false }
     func signOut() async throws {}
     func deleteAccount() async throws {}
 }

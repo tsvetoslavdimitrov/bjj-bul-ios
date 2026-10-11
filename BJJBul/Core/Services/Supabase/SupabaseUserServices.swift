@@ -19,13 +19,46 @@ struct SupabaseAuthService: AuthService {
         )
     }
 
-    /// Sends a one-time code (and magic link) to the email address.
+    static let redirectURL = URL(string: "bjjbul://login")!
+
+    /// Sends a one-time code (and magic link to bjjbul://login) to the email address.
     func sendEmailCode(to email: String) async throws {
-        try await client.auth.signInWithOTP(email: email)
+        try await client.auth.signInWithOTP(email: email, redirectTo: Self.redirectURL)
     }
 
+    /// Tries type .email first, then .magiclink (older templates / existing users).
     func verifyEmailCode(email: String, code: String) async throws {
-        _ = try await client.auth.verifyOTP(email: email, token: code, type: .email)
+        do {
+            _ = try await client.auth.verifyOTP(email: email, token: code, type: .email)
+        } catch {
+            do {
+                _ = try await client.auth.verifyOTP(email: email, token: code, type: .magiclink)
+            } catch {
+                throw error
+            }
+        }
+    }
+
+    func signUp(email: String, password: String) async throws -> Bool {
+        let response = try await client.auth.signUp(email: email, password: password, redirectTo: Self.redirectURL)
+        return response.session != nil
+    }
+
+    func signIn(email: String, password: String) async throws {
+        _ = try await client.auth.signIn(email: email, password: password)
+    }
+
+    func sendPasswordReset(email: String) async throws {
+        try await client.auth.resetPasswordForEmail(email, redirectTo: Self.redirectURL)
+    }
+
+    func updatePassword(_ password: String) async throws {
+        _ = try await client.auth.update(user: UserAttributes(password: password))
+    }
+
+    func handleAuthURL(_ url: URL) async throws -> Bool {
+        _ = try await client.auth.session(from: url)
+        return url.absoluteString.contains("type=recovery")
     }
 
     func signOut() async throws {
