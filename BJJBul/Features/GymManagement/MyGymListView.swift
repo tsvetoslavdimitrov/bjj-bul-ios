@@ -259,7 +259,8 @@ struct StudentGymView: View {
             try await services.gymManagement.checkIn(gymId: myGym.gymId, classId: item.id, userId: uid, date: Date())
             checkedIn.insert(item.id)
         } catch {
-            errorMessage = error.localizedDescription
+            let text = String(describing: error)
+            errorMessage = text.contains("no_credits") ? String(localized: "pass.noCredits") : error.localizedDescription
         }
     }
 }

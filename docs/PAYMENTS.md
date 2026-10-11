@@ -65,3 +65,20 @@ No money moves through BJJ Bul.
 - Reference format: `<gym-slug>-<first 6 chars of user id>-<YYYY-MM>`.
 - "I've paid" creates a `payment_claims` row (pending). Staff see it in Payments and **Confirm** it (`confirm_payment_claim` → inserts `member_payments`) or **Reject** it (`reject_payment_claim`).
 - No money moves through BJJ Bul. It's the gym's own Revolut account or cash.
+
+## BJJ Pass (0012)
+In the app, student payments are branded **BJJ Pass** (Profile → BJJ Pass).
+- **Plans** (`memberships.kind`):
+  - `subscription`: monthly, quarterly or yearly. Status is paid / due / overdue, based on subscription payments only.
+  - `one_off`: `class_credits` (1 = drop-in, 10 = class card) plus `validity_days`.
+- **Passes:** recording a payment for a one-off plan, whether staff record it or confirm a claim, creates a `student_passes` row
+  (credits, `expires_at = now() + validity_days`) through a trigger on `member_payments`.
+- **Check-in:** a student without an active subscription uses 1 credit from the pass that expires first.
+  Undoing the check-in gives the credit back.
+  - No credits, self check-in: blocked with `no_credits`, but only if the gym sells one-off passes.
+  - Otherwise, including when staff check someone in: allowed, with `attendance.unpaid = true`, and the app shows a warning.
+- **Visitors:** on a gym page, "Buy a drop-in / class pass" lists the gym's one-off plans (`gym_pass_plans`), the gym's Revolut link,
+  the reference and cash instructions. "I've paid" creates a claim and a **pending** student membership. When staff confirm,
+  the membership is activated and the pass is created.
+- **Student overview:** RPC `my_bjj_pass()` returns the subscription status plus credits left and the nearest expiry per gym.
+  `my_student_memberships()` from 0011 remains for older builds.

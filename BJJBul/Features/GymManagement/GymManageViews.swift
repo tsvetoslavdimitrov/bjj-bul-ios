@@ -234,9 +234,10 @@ struct AttendanceView: View {
                                                              userId: member.userId, date: date)
                 present.remove(member.userId)
             } else {
-                try await services.gymManagement.checkIn(gymId: myGym.gymId, classId: item.id,
-                                                         userId: member.userId, date: date)
+                let unpaid = try await services.gymManagement.checkIn(gymId: myGym.gymId, classId: item.id,
+                                                                      userId: member.userId, date: date)
                 present.insert(member.userId)
+                errorMessage = unpaid ? String(localized: "pass.unpaidWarning \(member.displayName)") : nil
             }
         } catch {
             errorMessage = error.localizedDescription
@@ -254,6 +255,7 @@ struct PaymentsManageView: View {
     @State private var memberships: [Membership] = []
     @State private var recording: PaymentStatusRow?
     @State private var claims: [PaymentClaim] = []
+    @State private var passes: [StudentPass] = []
     @State private var errorMessage: String?
 
     private var overdue: [PaymentStatusRow] { rows.filter { !$0.paid } }
@@ -281,6 +283,16 @@ struct PaymentsManageView: View {
                             }
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                            if let planName = claim.planName {
+                                HStack(spacing: 4) {
+                                    Text(verbatim: planName)
+                                    if let kind = claim.planKind {
+                                        Text(verbatim: "·")
+                                        Text(LocalizedStringKey(kind.localizedKey))
+                                    }
+                                }
+                                .font(.caption)
+                            }
                             if let reference = claim.reference {
                                 Text(verbatim: reference).font(.caption.monospaced())
                             }
@@ -326,6 +338,28 @@ struct PaymentsManageView: View {
                 }
             } header: {
                 Text("gym.payments.paid")
+            }
+            Section {
+                if passes.isEmpty {
+                    Text("pass.none").foregroundStyle(.secondary)
+                }
+                ForEach(passes) { pass in
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(pass.displayName.isEmpty ? String(localized: "feed.anonymous") : pass.displayName)
+                                .font(.headline)
+                            Text(verbatim: pass.planName).font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        VStack(alignment: .trailing, spacing: 2) {
+                            Text("pass.left \(pass.creditsLeft) \(pass.creditsTotal)").font(.subheadline)
+                            Text("pass.expires \(BGDate.string(pass.expiresAt, date: .medium, time: .none))")
+                                .font(.caption2).foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            } header: {
+                Text("pass.active")
             }
             Section {
                 NavigationLink {
@@ -375,6 +409,7 @@ struct PaymentsManageView: View {
         rows = (try? await services.gymManagement.paymentStatus(gymId: myGym.gymId)) ?? []
         memberships = (try? await services.gymManagement.memberships(gymId: myGym.gymId)) ?? []
         claims = (try? await services.gymManagement.paymentClaims(gymId: myGym.gymId)) ?? []
+        passes = (try? await services.gymManagement.gymPasses(gymId: myGym.gymId)) ?? []
     }
 
     @MainActor
@@ -404,6 +439,7 @@ struct RecordPaymentView: View {
     @State private var method: MemberPaymentMethod = .cash
     @State private var note = ""
     @State private var errorMessage: String?
+    @State private var planId: UUID?
 
     init(myGym: MyGym, row: PaymentStatusRow, memberships: [Membership], onSaved: @escaping () -> Void) {
         self.myGym = myGym
@@ -411,6 +447,7 @@ struct RecordPaymentView: View {
         self.memberships = memberships
         self.onSaved = onSaved
         _amountText = State(initialValue: row.price.map { String(format: "%.2f", $0) } ?? "")
+        _planId = State(initialValue: memberships.first { $0.name == row.membershipName }?.id)
     }
 
     var body: some View {
@@ -418,6 +455,12 @@ struct RecordPaymentView: View {
             Form {
                 Section {
                     Text(row.displayName).font(.headline)
+                    Picker("gym.membership", selection: $planId) {
+                        Text("gym.membership.none").tag(UUID?.none)
+                        ForEach(memberships) { plan in
+                            Text(verbatim: plan.name).tag(UUID?.some(plan.id))
+                        }
+                    }
                     TextField("gym.payments.amount", text: $amountText)
                         .keyboardType(.decimalPad)
                     Picker("gym.payments.method", selection: $method) {
@@ -452,7 +495,7 @@ struct RecordPaymentView: View {
     @MainActor
     private func save() async {
         guard let amount = Double(amountText.replacingOccurrences(of: ",", with: ".")) else { return }
-        let membershipId = memberships.first { $0.name == row.membershipName }?.id
+        let membershipId = planId
         let draft = MemberPaymentDraft(gymId: myGym.gymId, userId: row.userId, membershipId: membershipId,
                                        amount: amount, method: method, note: note)
         do {
@@ -481,7 +524,12 @@ struct MembershipPlansView: View {
                     HStack {
                         VStack(alignment: .leading) {
                             Text(plan.name).font(.headline)
-                            Text(LocalizedStringKey(plan.period.localizedKey)).font(.caption).foregroundStyle(.secondary)
+                            if plan.kind == .oneOff {
+                                Text("pass.summary \(plan.classCredits ?? 1) \(plan.validityDays ?? 30)")
+                                    .font(.caption).foregroundStyle(.secondary)
+                            } else {
+                                Text(LocalizedStringKey(plan.period.localizedKey)).font(.caption).foregroundStyle(.secondary)
+                            }
                         }
                         Spacer()
                         Text(verbatim: String(format: "%.2f %@", plan.price, plan.currency))
@@ -544,9 +592,26 @@ struct MembershipEditorView: View {
             Form {
                 TextField("gym.membership.name", text: $plan.name)
                 TextField("gym.membership.price", text: $priceText).keyboardType(.decimalPad)
-                Picker("gym.membership.period", selection: $plan.period) {
-                    ForEach(MembershipPeriod.allCases, id: \.self) { item in
+                Picker("plankind.label", selection: $plan.kind) {
+                    ForEach(PlanKind.allCases, id: \.self) { item in
                         Text(LocalizedStringKey(item.localizedKey)).tag(item)
+                    }
+                }
+                .pickerStyle(.segmented)
+                if plan.kind == .subscription {
+                    Picker("gym.membership.period", selection: $plan.period) {
+                        Text("membership.period.monthly").tag(MembershipPeriod.monthly)
+                        Text("membership.period.quarterly").tag(MembershipPeriod.quarterly)
+                        Text("membership.period.yearly").tag(MembershipPeriod.yearly)
+                    }
+                } else {
+                    Stepper(value: Binding(get: { plan.classCredits ?? 1 }, set: { plan.classCredits = $0 }),
+                            in: 1...100) {
+                        Text("pass.credits \(plan.classCredits ?? 1)")
+                    }
+                    Stepper(value: Binding(get: { plan.validityDays ?? 30 }, set: { plan.validityDays = $0 }),
+                            in: 1...365, step: 1) {
+                        Text("pass.validity \(plan.validityDays ?? 30)")
                     }
                 }
                 Toggle("gym.membership.active", isOn: $plan.active)
@@ -582,6 +647,15 @@ struct MembershipEditorView: View {
             return
         }
         plan.price = price
+        if plan.kind == .oneOff {
+            plan.classCredits = plan.classCredits ?? 1
+            plan.validityDays = plan.validityDays ?? 30
+            plan.period = (plan.classCredits ?? 1) == 1 ? .dropIn : .pack
+        } else {
+            plan.classCredits = nil
+            plan.validityDays = nil
+            if plan.period == .dropIn || plan.period == .pack { plan.period = .monthly }
+        }
         do {
             try await services.gymManagement.saveMembership(plan, isNew: isNew)
             onSaved()

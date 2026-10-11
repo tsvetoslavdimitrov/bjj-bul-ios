@@ -128,7 +128,9 @@ protocol GymManagementService {
     func saveClass(_ item: ClassSchedule, isNew: Bool) async throws
     func deleteClass(id: UUID) async throws
     func attendance(gymId: UUID, classId: UUID, date: Date) async throws -> Set<UUID>
-    func checkIn(gymId: UUID, classId: UUID, userId: UUID, date: Date) async throws
+    /// Returns true when the check-in was allowed without a subscription or credit (flagged unpaid).
+    @discardableResult
+    func checkIn(gymId: UUID, classId: UUID, userId: UUID, date: Date) async throws -> Bool
     func undoCheckIn(gymId: UUID, classId: UUID, userId: UUID, date: Date) async throws
 
     func memberships(gymId: UUID) async throws -> [Membership]
@@ -151,4 +153,8 @@ protocol GymManagementService {
     func rejectPaymentClaim(id: UUID, note: String) async throws
     func revolutURL(gymId: UUID) async throws -> String?
     func setRevolutURL(gymId: UUID, url: String) async throws
+
+    // BJJ Pass (0012)
+    func gymPassPlans(gymId: UUID) async throws -> [GymPassPlan]
+    func gymPasses(gymId: UUID) async throws -> [StudentPass]
 }

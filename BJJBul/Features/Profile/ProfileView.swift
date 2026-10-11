@@ -67,7 +67,7 @@ struct ProfileView: View {
                 NavigationLink {
                     MyPaymentsView()
                 } label: {
-                    Label("mypay.title", systemImage: "eurosign.circle")
+                    Label("mypay.title", systemImage: "ticket")
                 }
             }
 

@@ -191,6 +191,9 @@ struct MembershipRow: Decodable {
     let currency: String
     let period: String
     let active: Bool
+    let kind: String?
+    let class_credits: Int?
+    let validity_days: Int?
 }
 struct MembershipUpsert: Encodable {
     let id: UUID
@@ -200,7 +203,30 @@ struct MembershipUpsert: Encodable {
     let currency: String
     let period: String
     let active: Bool
+    let kind: String
+    let class_credits: Int?
+    let validity_days: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case id, gym_id, name, price, currency, period, active, kind, class_credits, validity_days
+    }
+
+    // Nulls are sent explicitly so switching a plan back to subscription clears credits.
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encode(gym_id, forKey: .gym_id)
+        try c.encode(name, forKey: .name)
+        try c.encode(price, forKey: .price)
+        try c.encode(currency, forKey: .currency)
+        try c.encode(period, forKey: .period)
+        try c.encode(active, forKey: .active)
+        try c.encode(kind, forKey: .kind)
+        try c.encode(class_credits, forKey: .class_credits)
+        try c.encode(validity_days, forKey: .validity_days)
+    }
 }
+struct AttendanceUnpaidRow: Decodable { let unpaid: Bool? }
 struct PaymentStatusDTO: Decodable {
     let user_id: UUID
     let display_name: String?
@@ -360,10 +386,16 @@ struct SupabaseGymManagementService: GymManagementService {
         return Set(rows.map { $0.user_id })
     }
 
-    func checkIn(gymId: UUID, classId: UUID, userId: UUID, date: Date) async throws {
+    @discardableResult
+    func checkIn(gymId: UUID, classId: UUID, userId: UUID, date: Date) async throws -> Bool {
         let row = AttendanceInsert(gym_id: gymId, class_schedule_id: classId, user_id: userId,
                                    class_date: EventDates.string(from: date))
-        try await client.from("attendance").insert(row).execute()
+        let rows: [AttendanceUnpaidRow] = try await client.from("attendance")
+            .insert(row)
+            .select("unpaid")
+            .execute()
+            .value
+        return rows.first?.unpaid ?? false
     }
 
     func undoCheckIn(gymId: UUID, classId: UUID, userId: UUID, date: Date) async throws {
@@ -376,21 +408,26 @@ struct SupabaseGymManagementService: GymManagementService {
 
     func memberships(gymId: UUID) async throws -> [Membership] {
         let rows: [MembershipRow] = try await client.from("memberships")
-            .select("id,gym_id,name,price,currency,period,active")
+            .select()
             .eq("gym_id", value: gymId.uuidString)
             .order("price")
             .execute()
             .value
         return rows.map { row in
             Membership(id: row.id, gymId: row.gym_id, name: row.name, price: row.price, currency: row.currency,
-                       period: MembershipPeriod(rawValue: row.period) ?? .monthly, active: row.active)
+                       period: MembershipPeriod(rawValue: row.period) ?? .monthly, active: row.active,
+                       kind: row.kind.flatMap { PlanKind(rawValue: $0) } ?? .subscription,
+                       classCredits: row.class_credits, validityDays: row.validity_days)
         }
     }
 
     func saveMembership(_ membership: Membership, isNew: Bool) async throws {
         let row = MembershipUpsert(id: membership.id, gym_id: membership.gymId, name: membership.name,
                                    price: membership.price, currency: membership.currency,
-                                   period: membership.period.rawValue, active: membership.active)
+                                   period: membership.period.rawValue, active: membership.active,
+                                   kind: membership.kind.rawValue,
+                                   class_credits: membership.kind == .oneOff ? membership.classCredits : nil,
+                                   validity_days: membership.kind == .oneOff ? membership.validityDays : nil)
         if isNew {
             try await client.from("memberships").insert(row).execute()
         } else {
@@ -460,7 +497,7 @@ struct SupabaseGymManagementService: GymManagementService {
     // MARK: Student payments (0011)
 
     func myStudentMemberships() async throws -> [StudentMembership] {
-        let rows: [StudentMembershipRow] = try await client.rpc("my_student_memberships").execute().value
+        let rows: [StudentMembershipRow] = try await client.rpc("my_bjj_pass").execute().value
         return rows.map { row in
             StudentMembership(gymId: row.gym_id, gymName: row.gym_name, gymSlug: row.gym_slug,
                               revolutURL: row.revolut_url.flatMap { URL(string: $0) },
@@ -470,7 +507,11 @@ struct SupabaseGymManagementService: GymManagementService {
                               paidUntil: row.paid_until.flatMap { EventDates.date(from: $0) },
                               nextDue: row.next_due.flatMap { EventDates.date(from: $0) },
                               status: PaymentPeriodStatus(rawValue: row.status) ?? .due,
-                              pendingClaims: row.pending_claims ?? 0)
+                              pendingClaims: row.pending_claims ?? 0,
+                              kind: row.membership_kind.flatMap { PlanKind(rawValue: $0) } ?? .subscription,
+                              memberStatus: row.member_status.flatMap { MemberStatus(rawValue: $0) } ?? .active,
+                              passCredits: row.pass_credits ?? 0,
+                              passExpiresAt: row.pass_expires_at.map { DateParsing.date(from: $0) })
         }
     }
 
@@ -509,7 +550,8 @@ struct SupabaseGymManagementService: GymManagementService {
             PaymentClaim(id: row.id, userId: row.user_id, displayName: row.display_name ?? "",
                          periodMonth: row.period_month.flatMap { EventDates.date(from: $0) }, amount: row.amount,
                          method: MemberPaymentMethod(rawValue: row.method) ?? .cash,
-                         reference: row.reference, note: row.note, createdAt: DateParsing.date(from: row.created_at))
+                         reference: row.reference, note: row.note, createdAt: DateParsing.date(from: row.created_at),
+                         planName: row.plan_name, planKind: row.plan_kind.flatMap { PlanKind(rawValue: $0) })
         }
     }
 
@@ -534,7 +576,56 @@ struct SupabaseGymManagementService: GymManagementService {
     func setRevolutURL(gymId: UUID, url: String) async throws {
         try await client.rpc("set_gym_revolut_url", params: RevolutParams(p_gym: gymId, p_url: url)).execute()
     }
+
+    // MARK: BJJ Pass (0012)
+
+    func gymPassPlans(gymId: UUID) async throws -> [GymPassPlan] {
+        let rows: [GymPassPlanRow] = try await client.rpc("gym_pass_plans", params: GymIdParam(p_gym: gymId))
+            .execute()
+            .value
+        return rows.map { row in
+            GymPassPlan(id: row.id, name: row.name, kind: PlanKind(rawValue: row.kind) ?? .subscription,
+                        price: row.price, currency: row.currency,
+                        period: MembershipPeriod(rawValue: row.period) ?? .monthly,
+                        classCredits: row.class_credits, validityDays: row.validity_days, gymSlug: row.gym_slug,
+                        revolutURL: row.revolut_url.flatMap { URL(string: $0) })
+        }
+    }
+
+    func gymPasses(gymId: UUID) async throws -> [StudentPass] {
+        let rows: [StudentPassRow] = try await client.rpc("get_gym_passes", params: GymIdParam(p_gym: gymId))
+            .execute()
+            .value
+        return rows.map { row in
+            StudentPass(id: row.id, userId: row.user_id, displayName: row.display_name ?? "", planName: row.plan_name,
+                        creditsLeft: row.credits_left, creditsTotal: row.credits_total,
+                        expiresAt: DateParsing.date(from: row.expires_at))
+        }
+    }
 }
+
+struct GymPassPlanRow: Decodable {
+    let id: UUID
+    let name: String
+    let kind: String
+    let price: Double
+    let currency: String
+    let period: String
+    let class_credits: Int?
+    let validity_days: Int?
+    let gym_slug: String
+    let revolut_url: String?
+}
+struct StudentPassRow: Decodable {
+    let id: UUID
+    let user_id: UUID
+    let display_name: String?
+    let plan_name: String
+    let credits_left: Int
+    let credits_total: Int
+    let expires_at: String
+}
+
 
 struct StudentMembershipRow: Decodable {
     let gym_id: UUID
@@ -550,6 +641,10 @@ struct StudentMembershipRow: Decodable {
     let next_due: String?
     let status: String
     let pending_claims: Int?
+    let membership_kind: String?
+    let member_status: String?
+    let pass_credits: Int?
+    let pass_expires_at: String?
 }
 struct PaymentRecordRow: Decodable {
     let id: UUID
@@ -579,6 +674,8 @@ struct PaymentClaimRow: Decodable {
     let reference: String?
     let note: String?
     let created_at: String
+    let plan_name: String?
+    let plan_kind: String?
 }
 struct ClaimIdParam: Encodable { let p_claim: UUID }
 struct ClaimRejectParams: Encodable {

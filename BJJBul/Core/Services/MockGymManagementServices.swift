@@ -36,7 +36,11 @@ final class MockGymManagementService: GymManagementService {
                          belt: .blue, stripes: 0, role: .student, status: .pending, membershipId: nil),
         ]
         plansList = [Membership(id: UUID(), gymId: gymId, name: "Monthly", price: 60, currency: "EUR",
-                                period: .monthly, active: true)]
+                                period: .monthly, active: true),
+                     Membership(id: UUID(), gymId: gymId, name: "Drop-in", price: 15, currency: "EUR",
+                                period: .dropIn, active: true, kind: .oneOff, classCredits: 1, validityDays: 30),
+                     Membership(id: UUID(), gymId: gymId, name: "10 classes", price: 100, currency: "EUR",
+                                period: .pack, active: true, kind: .oneOff, classCredits: 10, validityDays: 90)]
     }
 
     func myGyms() async throws -> [MyGym] {
@@ -73,8 +77,10 @@ final class MockGymManagementService: GymManagementService {
     func attendance(gymId: UUID, classId: UUID, date: Date) async throws -> Set<UUID> {
         Set(members.map { $0.userId }.filter { checkIns.contains(key(classId, $0, date)) })
     }
-    func checkIn(gymId: UUID, classId: UUID, userId: UUID, date: Date) async throws {
+    @discardableResult
+    func checkIn(gymId: UUID, classId: UUID, userId: UUID, date: Date) async throws -> Bool {
         checkIns.insert(key(classId, userId, date))
+        return false
     }
     func undoCheckIn(gymId: UUID, classId: UUID, userId: UUID, date: Date) async throws {
         checkIns.remove(key(classId, userId, date))
@@ -120,7 +126,9 @@ final class MockGymManagementService: GymManagementService {
         return [StudentMembership(gymId: gymId, gymName: name, gymSlug: "demo-gym",
                                   revolutURL: revolut.flatMap { URL(string: $0) }, membershipId: plansList.first?.id,
                                   membershipName: "Monthly", price: 60, currency: "EUR", period: .monthly,
-                                  paidUntil: nil, nextDue: Date(), status: .due, pendingClaims: claims.count)]
+                                  paidUntil: nil, nextDue: Date(), status: .due, pendingClaims: claims.count,
+                                  kind: .subscription, memberStatus: .active, passCredits: 7,
+                                  passExpiresAt: Date().addingTimeInterval(40 * 86400))]
     }
     func myPayments(gymId: UUID) async throws -> [PaymentRecord] {
         [PaymentRecord(id: UUID(), amount: 60, currency: "EUR", method: .cash,
@@ -139,5 +147,18 @@ final class MockGymManagementService: GymManagementService {
     func rejectPaymentClaim(id: UUID, note: String) async throws { claims.removeAll { $0.id == id } }
     func revolutURL(gymId: UUID) async throws -> String? { revolut }
     func setRevolutURL(gymId: UUID, url: String) async throws { revolut = url.isEmpty ? nil : url }
+
+    func gymPassPlans(gymId: UUID) async throws -> [GymPassPlan] {
+        plansList.filter { $0.active }.map { plan in
+            GymPassPlan(id: plan.id, name: plan.name, kind: plan.kind, price: plan.price, currency: plan.currency,
+                        period: plan.period, classCredits: plan.classCredits, validityDays: plan.validityDays,
+                        gymSlug: "demo-gym", revolutURL: revolut.flatMap { URL(string: $0) })
+        }
+    }
+    func gymPasses(gymId: UUID) async throws -> [StudentPass] {
+        [StudentPass(id: UUID(), userId: UUID(), displayName: "Иван", planName: "10 classes", creditsLeft: 7,
+                     creditsTotal: 10, expiresAt: Date().addingTimeInterval(40 * 86400))]
+    }
 }
+
 

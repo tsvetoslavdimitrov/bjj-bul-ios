@@ -470,7 +470,7 @@
 "post.video.unmute" = "Пусни звука";
 
 /* 0011: student payments */
-"mypay.title" = "Моите плащания";
+"mypay.title" = "BJJ Pass";
 "mypay.none" = "Все още не си активен ученик в зала.";
 "mypay.nextDue %@" = "следващо плащане %@";
 "mypay.status.paid" = "Платено";
@@ -500,3 +500,25 @@
 "gym.settings.revolut.placeholder" = "https://revolut.me/вашата-зала";
 "gym.settings.revolut.invalid" = "Използвай линк като https://revolut.me/име";
 "gym.settings.revolut.footer" = "Учениците виждат бутон „Плати с Revolut“ в Моите плащания.";
+
+/* 0012: BJJ Pass */
+"pass.brand" = "BJJ Pass";
+"plankind.label" = "Вид";
+"plankind.subscription" = "Абонамент";
+"plankind.one_off" = "Еднократна карта";
+"pass.credits %lld" = "Тренировки: %lld";
+"pass.validity %lld" = "Валидна %lld дни";
+"pass.summary %lld %lld" = "%lld тренировки · валидна %lld дни";
+"pass.left %lld %lld" = "остават %lld от %lld";
+"pass.creditsLeft %lld" = "остават %lld тренировки";
+"pass.expires %@" = "изтича %@";
+"pass.active" = "Активни карти";
+"pass.none" = "Няма активни карти.";
+"pass.noActive" = "Няма активен абонамент или карта.";
+"pass.noCredits" = "Нямаш оставащи тренировки в BJJ Pass. Купи карта или попитай треньора.";
+"pass.unpaidWarning %@" = "%@ няма активен абонамент или тренировки – посещението е отбелязано като неплатено.";
+"pass.buy" = "Купи еднократно посещение / карта";
+"pass.buy.choose" = "Избери карта";
+"pass.buy.none" = "Залата все още не продава карти в приложението.";
+"pass.buy.footer" = "След „Платих“ залата потвърждава плащането и картата се активира. Ако още не си член, се изпраща и заявка за членство.";
+"pass.buy.sent" = "Изпратено. Залата ще потвърди картата.";

@@ -50,6 +50,49 @@ struct Membership: Identifiable, Hashable {
     var currency: String
     var period: MembershipPeriod
     var active: Bool
+    var kind: PlanKind = .subscription
+    /// One-off plans only.
+    var classCredits: Int? = nil
+    var validityDays: Int? = nil
+}
+
+enum PlanKind: String, CaseIterable, Hashable {
+    case subscription
+    case oneOff = "one_off"
+
+    var localizedKey: String { "plankind.\(rawValue)" }
+}
+
+/// A gym's plan as seen by visitors/students (0012 gym_pass_plans).
+struct GymPassPlan: Identifiable, Hashable {
+    let id: UUID
+    var name: String
+    var kind: PlanKind
+    var price: Double
+    var currency: String
+    var period: MembershipPeriod
+    var classCredits: Int?
+    var validityDays: Int?
+    var gymSlug: String
+    var revolutURL: URL?
+}
+
+struct StudentPass: Identifiable, Hashable {
+    let id: UUID
+    let userId: UUID
+    var displayName: String
+    var planName: String
+    var creditsLeft: Int
+    var creditsTotal: Int
+    var expiresAt: Date
+}
+
+enum PassReference {
+    /// "<gym-slug>-<short user id>-<YYYY-MM>"
+    static func make(slug: String, userId: UUID, month: Date) -> String {
+        let short = String(userId.uuidString.lowercased().prefix(6))
+        return "\(slug)-\(short)-\(String(EventDates.string(from: month).prefix(7)))"
+    }
 }
 
 enum MemberPaymentMethod: String, CaseIterable, Hashable {
@@ -156,7 +199,7 @@ struct GymProfileDraft {
 // MARK: - Student payments (0011)
 
 enum PaymentPeriodStatus: String, Hashable {
-    case paid, due, overdue
+    case paid, due, overdue, none
 
     var localizedKey: String { "mypay.status.\(rawValue)" }
 }
@@ -176,14 +219,17 @@ struct StudentMembership: Identifiable, Hashable {
     var nextDue: Date?
     var status: PaymentPeriodStatus
     var pendingClaims: Int
+    var kind: PlanKind = .subscription
+    var memberStatus: MemberStatus = .active
+    var passCredits: Int = 0
+    var passExpiresAt: Date? = nil
 
     /// Month the next payment is for (the next due date's month, or this month).
     var periodMonth: Date { nextDue ?? Date() }
 
     /// "<gym-slug>-<short user id>-<YYYY-MM>"
     func reference(userId: UUID) -> String {
-        let short = String(userId.uuidString.lowercased().prefix(6))
-        return "\(gymSlug)-\(short)-\(String(EventDates.string(from: periodMonth).prefix(7)))"
+        PassReference.make(slug: gymSlug, userId: userId, month: periodMonth)
     }
 }
 
@@ -216,4 +262,6 @@ struct PaymentClaim: Identifiable, Hashable {
     var reference: String?
     var note: String?
     var createdAt: Date
+    var planName: String? = nil
+    var planKind: PlanKind? = nil
 }

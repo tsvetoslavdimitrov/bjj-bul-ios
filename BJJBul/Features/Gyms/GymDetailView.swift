@@ -11,6 +11,7 @@ struct GymDetailView: View {
     @State private var isFollowingGym = false
     @State private var showSignInHint = false
     @State private var showClaim = false
+    @State private var showBuyPass = false
     @State private var joinMessage: String?
 
     private var isFavorite: Bool { services.favoriteGymIds.contains(gym.id) }
@@ -82,6 +83,9 @@ struct GymDetailView: View {
         }
         .sheet(isPresented: $showFixLocation) {
             FixLocationView(gym: gym)
+        }
+        .sheet(isPresented: $showBuyPass) {
+            GymPassPurchaseView(gymId: gym.id, gymName: gym.name)
         }
         .sheet(isPresented: $showClaim) {
             ClaimGymView(preselectedGymId: gym.id)
@@ -261,6 +265,15 @@ struct GymDetailView: View {
                 }
             } label: {
                 Label("gym.join", systemImage: "person.badge.plus")
+            }
+            Button {
+                if services.isSignedIn {
+                    showBuyPass = true
+                } else {
+                    showSignInHint = true
+                }
+            } label: {
+                Label("pass.buy", systemImage: "ticket")
             }
             Button {
                 if services.isSignedIn {

@@ -470,7 +470,7 @@
 "post.video.unmute" = "Tap for sound";
 
 /* 0011: student payments */
-"mypay.title" = "My payments";
+"mypay.title" = "BJJ Pass";
 "mypay.none" = "You're not an active student at any gym yet.";
 "mypay.nextDue %@" = "next due %@";
 "mypay.status.paid" = "Paid";
@@ -500,3 +500,25 @@
 "gym.settings.revolut.placeholder" = "https://revolut.me/yourgym";
 "gym.settings.revolut.invalid" = "Use a link like https://revolut.me/name";
 "gym.settings.revolut.footer" = "Students see a Pay with Revolut button in My payments.";
+
+/* 0012: BJJ Pass */
+"pass.brand" = "BJJ Pass";
+"plankind.label" = "Type";
+"plankind.subscription" = "Subscription";
+"plankind.one_off" = "One-off pass";
+"pass.credits %lld" = "Classes: %lld";
+"pass.validity %lld" = "Valid for %lld days";
+"pass.summary %lld %lld" = "%lld classes · valid %lld days";
+"pass.left %lld %lld" = "%lld of %lld left";
+"pass.creditsLeft %lld" = "%lld classes left";
+"pass.expires %@" = "expires %@";
+"pass.active" = "Active passes";
+"pass.none" = "No active passes.";
+"pass.noActive" = "No active subscription or pass.";
+"pass.noCredits" = "No classes left on your BJJ Pass. Buy a pass or ask your coach.";
+"pass.unpaidWarning %@" = "%@ has no active subscription or credits – check-in marked unpaid.";
+"pass.buy" = "Buy a drop-in / class pass";
+"pass.buy.choose" = "Choose a pass";
+"pass.buy.none" = "This gym doesn't sell passes in the app yet.";
+"pass.buy.footer" = "After you tap \"I've paid\", the gym confirms the payment and your pass becomes active. If you're not a member yet, a membership request is sent too.";
+"pass.buy.sent" = "Sent. The gym will confirm your pass.";
