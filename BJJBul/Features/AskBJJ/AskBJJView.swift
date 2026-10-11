@@ -3,7 +3,7 @@ import SwiftUI
 /// "Ask BJJ" AI chat. Requires sign-in; messages go through the ask-bjj Edge Function.
 struct AskBJJView: View {
     @Environment(AppServices.self) private var services
-    @State private var messages: [AIChatMessage] = []
+    @State private var messages: [AIChatMessage]
     @State private var input = ""
     @State private var conversationId: UUID?
     @State private var isSending = false
@@ -16,6 +16,11 @@ struct AskBJJView: View {
     }
 
     private let bottomId = "bottom"
+
+    /// initialMessages: used by DEBUG demo screenshots only.
+    init(initialMessages: [AIChatMessage] = []) {
+        _messages = State(initialValue: initialMessages)
+    }
 
     var body: some View {
         Group {

@@ -13,7 +13,11 @@ struct EventsView: View {
         }
     }
 
-    @State private var segment: Segment = .competitions
+    @State private var segment: Segment
+
+    init(initialSegment: Segment = .competitions) {
+        _segment = State(initialValue: initialSegment)
+    }
 
     var body: some View {
         NavigationStack {

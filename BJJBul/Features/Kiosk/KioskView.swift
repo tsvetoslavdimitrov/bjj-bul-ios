@@ -30,13 +30,20 @@ struct KioskView: View {
     let waiverText: String
     let onExit: () -> Void
 
-    @State private var step: KioskStep = .home
+    @State private var step: KioskStep
     @State private var classes: [ClassSchedule] = []
     @State private var selectedClass: ClassSchedule?
     @State private var lastActivity = Date()
     @State private var showExit = false
     @State private var message: String?
     @State private var isBusy = false
+
+    init(myGym: MyGym, waiverText: String, initialStep: KioskStep = .home, onExit: @escaping () -> Void) {
+        self.myGym = myGym
+        self.waiverText = waiverText
+        self.onExit = onExit
+        _step = State(initialValue: initialStep)
+    }
 
     private let idleTimeout: TimeInterval = 60
     private let ticker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()

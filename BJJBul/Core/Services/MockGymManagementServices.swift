@@ -105,8 +105,9 @@ final class MockGymManagementService: GymManagementService {
     func recordPayment(_ draft: MemberPaymentDraft) async throws { paidUsers.insert(draft.userId) }
 
     func subscription(gymId: UUID) async throws -> GymSubscription? {
-        GymSubscription(status: .trialing, planId: nil, trialEndsAt: Date().addingTimeInterval(20 * 86400),
-                        currentPeriodEnd: nil, method: nil)
+        // SAMPLE data: an active, paid subscription.
+        GymSubscription(status: .active, planId: nil, trialEndsAt: nil,
+                        currentPeriodEnd: Date().addingTimeInterval(25 * 86400), method: "revolut")
     }
     func plans() async throws -> [BJJBulPlan] {
         [BJJBulPlan(id: UUID(), code: "basic", name: "Basic", priceMonthlyEUR: 19, features: []),

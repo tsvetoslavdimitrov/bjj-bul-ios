@@ -3,15 +3,20 @@ import SwiftUI
 @main
 struct BJJBulApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    #if DEBUG
+    private let services = DemoMode.isOn ? AppServices.demo : AppServices.live
+    #else
     private let services = AppServices.live
+    #endif
 
     var body: some Scene {
         WindowGroup {
-            RootTabView()
+            rootView
                 .environment(services)
                 .task {
-                    PushManager.shared.services = services
                     await services.refreshSession()
+                    if isDemo { return }
+                    PushManager.shared.services = services
                     await PushManager.shared.refreshRegistrationIfAuthorized()
                 }
                 .onChange(of: services.isSignedIn) { _, signedIn in
@@ -27,5 +32,26 @@ struct BJJBulApp: App {
                         .environment(services)
                 }
         }
+    }
+
+    private var isDemo: Bool {
+        #if DEBUG
+        return DemoMode.isOn
+        #else
+        return false
+        #endif
+    }
+
+    @ViewBuilder
+    private var rootView: some View {
+        #if DEBUG
+        if let screen = DemoMode.screen {
+            DemoRouter(screen: screen)
+        } else {
+            RootTabView()
+        }
+        #else
+        RootTabView()
+        #endif
     }
 }
