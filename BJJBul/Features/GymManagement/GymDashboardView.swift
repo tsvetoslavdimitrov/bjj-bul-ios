@@ -73,6 +73,16 @@ struct GymDashboardView: View {
                     Label("gym.dash.classes", systemImage: "calendar")
                 }
                 NavigationLink {
+                    KioskSetupView(myGym: myGym)
+                } label: {
+                    Label("kiosk.title", systemImage: "ipad.landscape")
+                }
+                NavigationLink {
+                    KioskAttendanceView(myGym: myGym)
+                } label: {
+                    Label("kiosk.attendance", systemImage: "list.bullet.clipboard")
+                }
+                NavigationLink {
                     PaymentsManageView(myGym: myGym, canManage: hasAccess)
                 } label: {
                     Label("gym.dash.payments", systemImage: "eurosign.circle")

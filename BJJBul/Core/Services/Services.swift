@@ -158,3 +158,28 @@ protocol GymManagementService {
     func gymPassPlans(gymId: UUID) async throws -> [GymPassPlan]
     func gymPasses(gymId: UUID) async throws -> [StudentPass]
 }
+
+/// Front-desk kiosk (0013). The kiosk device is signed in as staff; every call is scoped to that gym.
+protocol KioskService {
+    func myMemberQR() async throws -> MemberQR
+    func setMemberPin(_ pin: String) async throws
+
+    func settings(gymId: UUID) async throws -> KioskSettings
+    /// pin: nil keeps, "" clears. waiver: nil keeps.
+    func saveSettings(gymId: UUID, pin: String?, waiver: String?) async throws
+    func verifyStaffPin(gymId: UUID, pin: String) async throws -> Bool
+
+    func searchMembers(gymId: UUID, query: String) async throws -> [KioskMember]
+    func resolveQR(gymId: UUID, payload: String) async throws -> KioskMember?
+    /// proof: a scanned QR payload or the member's 4-digit PIN.
+    func checkIn(gymId: UUID, classId: UUID?, userId: UUID?, proof: String, allowUnpaid: Bool) async throws -> KioskCheckInResult
+    /// Returns credits left after the payment.
+    func recordPayment(gymId: UUID, userId: UUID, planId: UUID, method: MemberPaymentMethod, staffPin: String) async throws -> Int
+
+    func createLead(gymId: UUID, draft: KioskLeadDraft) async throws -> UUID
+    /// Sends the magic-link invite (Edge Function kiosk-invite). Returns the new/linked user id.
+    func inviteLead(leadId: UUID) async throws -> UUID
+    func guestCheckIn(gymId: UUID, classId: UUID?, draft: KioskGuestDraft, planId: UUID?,
+                      method: MemberPaymentMethod?, staffPin: String) async throws
+    func attendanceToday(gymId: UUID) async throws -> [KioskAttendanceRow]
+}

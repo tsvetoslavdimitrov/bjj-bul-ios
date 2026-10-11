@@ -19,6 +19,7 @@ final class AppServices {
     let ai: AIChatService
     let athletes: AthleteService
     let gymManagement: GymManagementService
+    let kiosk: KioskService
 
     var currentUser: AppUser?
     var favoriteGymIds: Set<UUID> = []
@@ -35,7 +36,7 @@ final class AppServices {
          social: SocialService, events: EventService, reviews: ReviewService,
          openMats: OpenMatService, contributions: ContributionService,
          training: TrainingService, notifications: NotificationService, quotes: QuoteService,
-         ai: AIChatService, athletes: AthleteService, gymManagement: GymManagementService) {
+         ai: AIChatService, athletes: AthleteService, gymManagement: GymManagementService, kiosk: KioskService) {
         self.gyms = gyms
         self.coaches = coaches
         self.users = users
@@ -51,6 +52,7 @@ final class AppServices {
         self.ai = ai
         self.athletes = athletes
         self.gymManagement = gymManagement
+        self.kiosk = kiosk
     }
 
     @MainActor
@@ -82,7 +84,8 @@ final class AppServices {
             quotes: SupabaseQuoteService(client: client),
             ai: SupabaseAIChatService(client: client),
             athletes: SupabaseAthleteService(client: client),
-            gymManagement: SupabaseGymManagementService(client: client)
+            gymManagement: SupabaseGymManagementService(client: client),
+            kiosk: SupabaseKioskService(client: client)
         )
     }()
 
@@ -101,6 +104,7 @@ final class AppServices {
         quotes: MockQuoteService(),
         ai: MockAIChatService(),
         athletes: MockAthleteService(),
-        gymManagement: MockGymManagementService()
+        gymManagement: MockGymManagementService(),
+        kiosk: MockKioskService()
     )
 }

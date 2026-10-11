@@ -65,6 +65,11 @@ struct ProfileView: View {
                     Label("gym.my", systemImage: "building.columns")
                 }
                 NavigationLink {
+                    MemberQRView()
+                } label: {
+                    Label("qr.title", systemImage: "qrcode")
+                }
+                NavigationLink {
                     MyPaymentsView()
                 } label: {
                     Label("mypay.title", systemImage: "ticket")
