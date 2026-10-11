@@ -152,3 +152,68 @@ struct GymProfileDraft {
         photoURLs = gym.photoURLs
     }
 }
+
+// MARK: - Student payments (0011)
+
+enum PaymentPeriodStatus: String, Hashable {
+    case paid, due, overdue
+
+    var localizedKey: String { "mypay.status.\(rawValue)" }
+}
+
+struct StudentMembership: Identifiable, Hashable {
+    var id: UUID { gymId }
+    let gymId: UUID
+    var gymName: String
+    var gymSlug: String
+    var revolutURL: URL?
+    var membershipId: UUID?
+    var membershipName: String?
+    var price: Double?
+    var currency: String
+    var period: MembershipPeriod
+    var paidUntil: Date?
+    var nextDue: Date?
+    var status: PaymentPeriodStatus
+    var pendingClaims: Int
+
+    /// Month the next payment is for (the next due date's month, or this month).
+    var periodMonth: Date { nextDue ?? Date() }
+
+    /// "<gym-slug>-<short user id>-<YYYY-MM>"
+    func reference(userId: UUID) -> String {
+        let short = String(userId.uuidString.lowercased().prefix(6))
+        return "\(gymSlug)-\(short)-\(String(EventDates.string(from: periodMonth).prefix(7)))"
+    }
+}
+
+struct PaymentRecord: Identifiable, Hashable {
+    let id: UUID
+    var amount: Double
+    var currency: String
+    var method: MemberPaymentMethod
+    var paidAt: Date
+    var periodMonth: Date?
+}
+
+struct PaymentClaimDraft {
+    var gymId: UUID
+    var membershipId: UUID?
+    var periodMonth: Date
+    var amount: Double?
+    var method: MemberPaymentMethod
+    var reference: String
+    var note: String
+}
+
+struct PaymentClaim: Identifiable, Hashable {
+    let id: UUID
+    let userId: UUID
+    var displayName: String
+    var periodMonth: Date?
+    var amount: Double?
+    var method: MemberPaymentMethod
+    var reference: String?
+    var note: String?
+    var createdAt: Date
+}

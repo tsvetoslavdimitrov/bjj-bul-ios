@@ -468,3 +468,35 @@
 "composer.music.footer" = "Споделя се само като линк – музиката не се добавя към видеото.";
 "post.video.mute" = "Без звук";
 "post.video.unmute" = "Пусни звука";
+
+/* 0011: student payments */
+"mypay.title" = "Моите плащания";
+"mypay.none" = "Все още не си активен ученик в зала.";
+"mypay.nextDue %@" = "следващо плащане %@";
+"mypay.status.paid" = "Платено";
+"mypay.status.due" = "За плащане";
+"mypay.status.overdue" = "Просрочено";
+"mypay.plan" = "План";
+"mypay.price" = "Цена";
+"mypay.status" = "Текущ период";
+"mypay.paidUntil" = "Платено до";
+"mypay.nextDueLabel" = "Следващо плащане";
+"mypay.claimPending" = "Плащането е заявено – чака потвърждение от треньора.";
+"mypay.howToPay" = "Как да платиш";
+"mypay.reference" = "Референция за плащане";
+"mypay.payRevolut" = "Плати с Revolut";
+"mypay.noRevolut" = "Залата все още няма Revolut линк.";
+"mypay.cash" = "В брой: плати на рецепцията или на треньора, после натисни „Платих“.";
+"mypay.ivePaid" = "Платих";
+"mypay.confirmNote" = "Сложи референцията в бележката в Revolut. Треньорът потвърждава плащането; дотогава то е в изчакване.";
+"mypay.history" = "История на плащанията";
+"mypay.noHistory" = "Все още няма записани плащания.";
+"mypay.period" = "Период";
+"payclaim.title" = "Заявени плащания";
+"payclaim.footer" = "Провери Revolut или касата и потвърди. Потвърждението записва плащането.";
+"payclaim.confirm" = "Потвърди";
+"payclaim.reject" = "Откажи";
+"gym.settings.revolut" = "Revolut за ученици";
+"gym.settings.revolut.placeholder" = "https://revolut.me/вашата-зала";
+"gym.settings.revolut.invalid" = "Използвай линк като https://revolut.me/име";
+"gym.settings.revolut.footer" = "Учениците виждат бутон „Плати с Revolut“ в Моите плащания.";

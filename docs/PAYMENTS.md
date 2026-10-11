@@ -57,3 +57,11 @@ No money moves through BJJ Bul.
     the iOS app doesn't sell anything to consumers.
 - If Apple insists, the fallback is an auto-renewable IAP subscription for the gym-management tier, or moving
   management to a web dashboard.
+
+## Student "My payments" (0011)
+- A gym can set its own `gyms.revolut_url` (`https://revolut.me/<name>`) in My gym → Gym profile.
+- Students see their plan, price, status (paid / due within 7 days / overdue), next due date and history in Profile → My payments.
+  Paid-until = the month of the last `member_payments.period_month` + the plan period (1/3/12 months).
+- Reference format: `<gym-slug>-<first 6 chars of user id>-<YYYY-MM>`.
+- "I've paid" creates a `payment_claims` row (pending). Staff see it in Payments and **Confirm** it (`confirm_payment_claim` → inserts `member_payments`) or **Reject** it (`reject_payment_claim`).
+- No money moves through BJJ Bul. It's the gym's own Revolut account or cash.

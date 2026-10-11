@@ -253,12 +253,63 @@ struct PaymentsManageView: View {
     @State private var rows: [PaymentStatusRow] = []
     @State private var memberships: [Membership] = []
     @State private var recording: PaymentStatusRow?
+    @State private var claims: [PaymentClaim] = []
+    @State private var errorMessage: String?
 
     private var overdue: [PaymentStatusRow] { rows.filter { !$0.paid } }
     private var paid: [PaymentStatusRow] { rows.filter { $0.paid } }
 
     var body: some View {
         List {
+            if !claims.isEmpty {
+                Section {
+                    ForEach(claims) { claim in
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack {
+                                Text(claim.displayName.isEmpty ? String(localized: "feed.anonymous") : claim.displayName)
+                                    .font(.headline)
+                                Spacer()
+                                if let amount = claim.amount {
+                                    Text(verbatim: String(format: "%.2f EUR", amount))
+                                }
+                            }
+                            HStack(spacing: 4) {
+                                Text(LocalizedStringKey(claim.method.localizedKey))
+                                if let month = claim.periodMonth {
+                                    Text(verbatim: "· \(EventDates.monthTitle(month))")
+                                }
+                            }
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            if let reference = claim.reference {
+                                Text(verbatim: reference).font(.caption.monospaced())
+                            }
+                            if let note = claim.note, !note.isEmpty {
+                                Text(verbatim: note).font(.caption)
+                            }
+                            if canManage {
+                                HStack {
+                                    Button("payclaim.confirm") {
+                                        Task { await review(claim, confirm: true) }
+                                    }
+                                    .buttonStyle(.borderedProminent)
+                                    Button("payclaim.reject", role: .destructive) {
+                                        Task { await review(claim, confirm: false) }
+                                    }
+                                    .buttonStyle(.bordered)
+                                }
+                            }
+                        }
+                    }
+                } header: {
+                    Text("payclaim.title")
+                } footer: {
+                    Text("payclaim.footer")
+                }
+            }
+            if let errorMessage {
+                Section { Text(errorMessage).foregroundStyle(.red) }
+            }
             Section {
                 if overdue.isEmpty {
                     Text("gym.payments.allPaid").foregroundStyle(.secondary)
@@ -323,6 +374,22 @@ struct PaymentsManageView: View {
     private func load() async {
         rows = (try? await services.gymManagement.paymentStatus(gymId: myGym.gymId)) ?? []
         memberships = (try? await services.gymManagement.memberships(gymId: myGym.gymId)) ?? []
+        claims = (try? await services.gymManagement.paymentClaims(gymId: myGym.gymId)) ?? []
+    }
+
+    @MainActor
+    private func review(_ claim: PaymentClaim, confirm: Bool) async {
+        do {
+            if confirm {
+                try await services.gymManagement.confirmPaymentClaim(id: claim.id)
+            } else {
+                try await services.gymManagement.rejectPaymentClaim(id: claim.id, note: "")
+            }
+            errorMessage = nil
+            await load()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }
 
@@ -547,6 +614,13 @@ struct GymSettingsView: View {
     @State private var monthlyText: String
     @State private var kidsText: String
     @State private var photoItem: PhotosPickerItem?
+    @State private var revolutText = ""
+
+    private var revolutValid: Bool {
+        let text = revolutText.trimmingCharacters(in: .whitespaces)
+        if text.isEmpty { return true }
+        return text.range(of: "^https://revolut\\.me/[A-Za-z0-9._-]+/?$", options: .regularExpression) != nil
+    }
     @State private var isSaving = false
     @State private var message: String?
 
@@ -601,6 +675,19 @@ struct GymSettingsView: View {
                 Text("gym.settings.prices")
             }
             Section {
+                TextField("gym.settings.revolut.placeholder", text: $revolutText)
+                    .keyboardType(.URL)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                if !revolutValid {
+                    Text("gym.settings.revolut.invalid").font(.footnote).foregroundStyle(.red)
+                }
+            } header: {
+                Text("gym.settings.revolut")
+            } footer: {
+                Text("gym.settings.revolut.footer")
+            }
+            Section {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         ForEach(draft.photoURLs, id: \.self) { url in
@@ -640,7 +727,12 @@ struct GymSettingsView: View {
                 Button("common.save") {
                     Task { await save() }
                 }
-                .disabled(!canManage || isSaving)
+                .disabled(!canManage || isSaving || !revolutValid)
+            }
+        }
+        .task {
+            if let current = try? await services.gymManagement.revolutURL(gymId: myGym.gymId) {
+                revolutText = current
             }
         }
         .onChange(of: photoItem) { _, newValue in
@@ -674,6 +766,8 @@ struct GymSettingsView: View {
         draft.priceKids = GymSettingsView.decimal(kidsText)
         do {
             try await services.gymManagement.updateGymProfile(draft)
+            try await services.gymManagement.setRevolutURL(gymId: myGym.gymId,
+                                                           url: revolutText.trimmingCharacters(in: .whitespaces))
             message = String(localized: "gym.settings.saved")
         } catch {
             message = error.localizedDescription

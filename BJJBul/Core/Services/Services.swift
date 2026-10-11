@@ -141,4 +141,14 @@ protocol GymManagementService {
     func plans() async throws -> [BJJBulPlan]
     func updateGymProfile(_ draft: GymProfileDraft) async throws
     func uploadGymPhoto(gymId: UUID, jpegData: Data) async throws -> URL
+
+    // Student payments (0011)
+    func myStudentMemberships() async throws -> [StudentMembership]
+    func myPayments(gymId: UUID) async throws -> [PaymentRecord]
+    func submitPaymentClaim(_ draft: PaymentClaimDraft) async throws
+    func paymentClaims(gymId: UUID) async throws -> [PaymentClaim]
+    func confirmPaymentClaim(id: UUID) async throws
+    func rejectPaymentClaim(id: UUID, note: String) async throws
+    func revolutURL(gymId: UUID) async throws -> String?
+    func setRevolutURL(gymId: UUID, url: String) async throws
 }

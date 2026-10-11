@@ -468,3 +468,35 @@
 "composer.music.footer" = "Shared as a link card only – music isn't added to videos.";
 "post.video.mute" = "Mute";
 "post.video.unmute" = "Tap for sound";
+
+/* 0011: student payments */
+"mypay.title" = "My payments";
+"mypay.none" = "You're not an active student at any gym yet.";
+"mypay.nextDue %@" = "next due %@";
+"mypay.status.paid" = "Paid";
+"mypay.status.due" = "Due";
+"mypay.status.overdue" = "Overdue";
+"mypay.plan" = "Plan";
+"mypay.price" = "Price";
+"mypay.status" = "Current period";
+"mypay.paidUntil" = "Paid until";
+"mypay.nextDueLabel" = "Next due date";
+"mypay.claimPending" = "Payment reported – waiting for the coach to confirm.";
+"mypay.howToPay" = "How to pay";
+"mypay.reference" = "Payment reference";
+"mypay.payRevolut" = "Pay with Revolut";
+"mypay.noRevolut" = "This gym hasn't added a Revolut link yet.";
+"mypay.cash" = "Cash: pay at the gym reception or to your coach, then tap \"I've paid\".";
+"mypay.ivePaid" = "I've paid";
+"mypay.confirmNote" = "Put the reference in the Revolut note. Your coach confirms the payment; until then it shows as pending.";
+"mypay.history" = "Payment history";
+"mypay.noHistory" = "No payments recorded yet.";
+"mypay.period" = "Period";
+"payclaim.title" = "Reported payments";
+"payclaim.footer" = "Check your Revolut or cash box, then confirm. Confirming records the payment.";
+"payclaim.confirm" = "Confirm";
+"payclaim.reject" = "Reject";
+"gym.settings.revolut" = "Revolut for students";
+"gym.settings.revolut.placeholder" = "https://revolut.me/yourgym";
+"gym.settings.revolut.invalid" = "Use a link like https://revolut.me/name";
+"gym.settings.revolut.footer" = "Students see a Pay with Revolut button in My payments.";

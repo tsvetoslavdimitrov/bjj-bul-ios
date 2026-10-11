@@ -64,6 +64,11 @@ struct ProfileView: View {
                 } label: {
                     Label("gym.my", systemImage: "building.columns")
                 }
+                NavigationLink {
+                    MyPaymentsView()
+                } label: {
+                    Label("mypay.title", systemImage: "eurosign.circle")
+                }
             }
 
             Section {

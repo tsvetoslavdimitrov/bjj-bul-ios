@@ -110,4 +110,34 @@ final class MockGymManagementService: GymManagementService {
     func uploadGymPhoto(gymId: UUID, jpegData: Data) async throws -> URL {
         URL(string: "https://example.com/demo.jpg")!
     }
+
+    // MARK: Student payments
+    private var claims: [PaymentClaim] = []
+    private var revolut: String? = "https://revolut.me/demogym"
+
+    func myStudentMemberships() async throws -> [StudentMembership] {
+        let name = MockData.gyms.first?.name ?? "Demo gym"
+        return [StudentMembership(gymId: gymId, gymName: name, gymSlug: "demo-gym",
+                                  revolutURL: revolut.flatMap { URL(string: $0) }, membershipId: plansList.first?.id,
+                                  membershipName: "Monthly", price: 60, currency: "EUR", period: .monthly,
+                                  paidUntil: nil, nextDue: Date(), status: .due, pendingClaims: claims.count)]
+    }
+    func myPayments(gymId: UUID) async throws -> [PaymentRecord] {
+        [PaymentRecord(id: UUID(), amount: 60, currency: "EUR", method: .cash,
+                       paidAt: Date().addingTimeInterval(-30 * 86400), periodMonth: Date().addingTimeInterval(-30 * 86400))]
+    }
+    func submitPaymentClaim(_ draft: PaymentClaimDraft) async throws {
+        claims.append(PaymentClaim(id: UUID(), userId: MockData.user.id, displayName: MockData.user.displayName,
+                                   periodMonth: draft.periodMonth, amount: draft.amount, method: draft.method,
+                                   reference: draft.reference, note: draft.note, createdAt: Date()))
+    }
+    func paymentClaims(gymId: UUID) async throws -> [PaymentClaim] { claims }
+    func confirmPaymentClaim(id: UUID) async throws {
+        if let claim = claims.first(where: { $0.id == id }) { paidUsers.insert(claim.userId) }
+        claims.removeAll { $0.id == id }
+    }
+    func rejectPaymentClaim(id: UUID, note: String) async throws { claims.removeAll { $0.id == id } }
+    func revolutURL(gymId: UUID) async throws -> String? { revolut }
+    func setRevolutURL(gymId: UUID, url: String) async throws { revolut = url.isEmpty ? nil : url }
 }
+

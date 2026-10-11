@@ -456,4 +456,138 @@ struct SupabaseGymManagementService: GymManagementService {
             .upload(path, data: jpegData, options: FileOptions(contentType: "image/jpeg"))
         return try client.storage.from(photoBucket).getPublicURL(path: path)
     }
+
+    // MARK: Student payments (0011)
+
+    func myStudentMemberships() async throws -> [StudentMembership] {
+        let rows: [StudentMembershipRow] = try await client.rpc("my_student_memberships").execute().value
+        return rows.map { row in
+            StudentMembership(gymId: row.gym_id, gymName: row.gym_name, gymSlug: row.gym_slug,
+                              revolutURL: row.revolut_url.flatMap { URL(string: $0) },
+                              membershipId: row.membership_id, membershipName: row.membership_name,
+                              price: row.price, currency: row.currency ?? "EUR",
+                              period: row.period.flatMap { MembershipPeriod(rawValue: $0) } ?? .monthly,
+                              paidUntil: row.paid_until.flatMap { EventDates.date(from: $0) },
+                              nextDue: row.next_due.flatMap { EventDates.date(from: $0) },
+                              status: PaymentPeriodStatus(rawValue: row.status) ?? .due,
+                              pendingClaims: row.pending_claims ?? 0)
+        }
+    }
+
+    func myPayments(gymId: UUID) async throws -> [PaymentRecord] {
+        let uid = try await signedInUserId(client)
+        let rows: [PaymentRecordRow] = try await client.from("member_payments")
+            .select("id,amount,currency,method,paid_at,period_month")
+            .eq("gym_id", value: gymId.uuidString)
+            .eq("user_id", value: uid.uuidString)
+            .order("paid_at", ascending: false)
+            .limit(100)
+            .execute()
+            .value
+        return rows.map { row in
+            PaymentRecord(id: row.id, amount: row.amount, currency: row.currency ?? "EUR",
+                          method: MemberPaymentMethod(rawValue: row.method) ?? .cash,
+                          paidAt: DateParsing.date(from: row.paid_at),
+                          periodMonth: row.period_month.flatMap { EventDates.date(from: $0) })
+        }
+    }
+
+    func submitPaymentClaim(_ draft: PaymentClaimDraft) async throws {
+        let uid = try await signedInUserId(client)
+        let row = PaymentClaimInsert(gym_id: draft.gymId, user_id: uid, membership_id: draft.membershipId,
+                                     period_month: String(EventDates.string(from: draft.periodMonth).prefix(7)) + "-01",
+                                     amount: draft.amount, method: draft.method.rawValue,
+                                     reference: draft.reference, note: draft.note.isEmpty ? nil : draft.note)
+        try await client.from("payment_claims").insert(row).execute()
+    }
+
+    func paymentClaims(gymId: UUID) async throws -> [PaymentClaim] {
+        let rows: [PaymentClaimRow] = try await client.rpc("get_payment_claims", params: GymIdParam(p_gym: gymId))
+            .execute()
+            .value
+        return rows.map { row in
+            PaymentClaim(id: row.id, userId: row.user_id, displayName: row.display_name ?? "",
+                         periodMonth: row.period_month.flatMap { EventDates.date(from: $0) }, amount: row.amount,
+                         method: MemberPaymentMethod(rawValue: row.method) ?? .cash,
+                         reference: row.reference, note: row.note, createdAt: DateParsing.date(from: row.created_at))
+        }
+    }
+
+    func confirmPaymentClaim(id: UUID) async throws {
+        try await client.rpc("confirm_payment_claim", params: ClaimIdParam(p_claim: id)).execute()
+    }
+
+    func rejectPaymentClaim(id: UUID, note: String) async throws {
+        try await client.rpc("reject_payment_claim", params: ClaimRejectParams(p_claim: id, p_note: note)).execute()
+    }
+
+    func revolutURL(gymId: UUID) async throws -> String? {
+        let rows: [RevolutRow] = try await client.from("gyms")
+            .select("revolut_url")
+            .eq("id", value: gymId.uuidString)
+            .limit(1)
+            .execute()
+            .value
+        return rows.first?.revolut_url
+    }
+
+    func setRevolutURL(gymId: UUID, url: String) async throws {
+        try await client.rpc("set_gym_revolut_url", params: RevolutParams(p_gym: gymId, p_url: url)).execute()
+    }
 }
+
+struct StudentMembershipRow: Decodable {
+    let gym_id: UUID
+    let gym_name: String
+    let gym_slug: String
+    let revolut_url: String?
+    let membership_id: UUID?
+    let membership_name: String?
+    let price: Double?
+    let currency: String?
+    let period: String?
+    let paid_until: String?
+    let next_due: String?
+    let status: String
+    let pending_claims: Int?
+}
+struct PaymentRecordRow: Decodable {
+    let id: UUID
+    let amount: Double
+    let currency: String?
+    let method: String
+    let paid_at: String
+    let period_month: String?
+}
+struct PaymentClaimInsert: Encodable {
+    let gym_id: UUID
+    let user_id: UUID
+    let membership_id: UUID?
+    let period_month: String
+    let amount: Double?
+    let method: String
+    let reference: String
+    let note: String?
+}
+struct PaymentClaimRow: Decodable {
+    let id: UUID
+    let user_id: UUID
+    let display_name: String?
+    let period_month: String?
+    let amount: Double?
+    let method: String
+    let reference: String?
+    let note: String?
+    let created_at: String
+}
+struct ClaimIdParam: Encodable { let p_claim: UUID }
+struct ClaimRejectParams: Encodable {
+    let p_claim: UUID
+    let p_note: String
+}
+struct RevolutRow: Decodable { let revolut_url: String? }
+struct RevolutParams: Encodable {
+    let p_gym: UUID
+    let p_url: String
+}
+
