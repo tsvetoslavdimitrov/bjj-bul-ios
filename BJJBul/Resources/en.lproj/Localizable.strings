@@ -134,3 +134,16 @@
 "legal.accept.decline" = "Decline and sign out";
 "legal.accept.declineFooter" = "You can still browse gyms and coaches without an account.";
 "legal.signIn.notice" = "By signing in, you agree to the Terms of Use and Privacy Policy. You'll be asked to confirm after signing in.";
+"tab.events" = "Events";
+"tab.directory" = "Directory";
+"directory.mode" = "Show";
+"events.empty" = "No upcoming events in Bulgaria";
+"events.source" = "Event data from Smoothcomp. Registration happens on Smoothcomp.";
+"events.registration" = "Registration";
+"events.registration.deadline" = "Deadline";
+"events.openSmoothcomp" = "Open in Smoothcomp";
+"events.addToCalendar" = "Add to Calendar";
+"events.registerNote" = "Check the event page for divisions, prices and deadlines.";
+"events.calendar.added" = "Added to your calendar";
+"events.calendar.denied" = "Calendar access is off. You can turn it on in Settings.";
+"events.calendar.failed" = "Couldn't add the event to your calendar.";

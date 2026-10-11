@@ -47,6 +47,7 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_CFBundleDisplayName: BJJ Bul
         INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Used to show BJJ gyms near you."
+        INFOPLIST_KEY_NSCalendarsWriteOnlyAccessUsageDescription: "Used to add competitions to your calendar."
         TARGETED_DEVICE_FAMILY: "1"
   BJJBulTests:
     type: bundle.unit-test

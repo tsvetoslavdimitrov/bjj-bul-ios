@@ -47,3 +47,8 @@ protocol SocialService {
     func report(_ target: ReportTarget, reason: ReportReason) async throws
     func block(userId: UUID) async throws
 }
+
+protocol EventService {
+    /// Upcoming events (ending today or later), soonest first.
+    func upcomingEvents() async throws -> [CompetitionEvent]
+}

@@ -36,3 +36,6 @@ Moderation: review the `reports` table in the dashboard. Apple expects action on
 
 ## 0005 terms
 `0005_terms.sql` adds `profiles.terms_accepted_at` and `terms_version`, plus the `accept_terms(p_version)` RPC. The app blocks signed-in use until the current `AppConfig.termsVersion` has been accepted.
+
+## 0006 events
+`0006_events.sql` creates `public.events` (public read; writes only with the service role) and seeds the Bulgarian events listed on Smoothcomp on 2026-10-11. See `docs/EVENTS.md` and `scripts/sync_events.py`.

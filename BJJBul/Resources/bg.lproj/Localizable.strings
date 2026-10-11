@@ -134,3 +134,16 @@
 "legal.accept.decline" = "Откажи и излез";
 "legal.accept.declineFooter" = "Можете да разглеждате зали и треньори и без акаунт.";
 "legal.signIn.notice" = "С влизането приемате Общите условия и Политиката за поверителност. След вход ще ви помолим да потвърдите.";
+"tab.events" = "Събития";
+"tab.directory" = "Каталог";
+"directory.mode" = "Покажи";
+"events.empty" = "Няма предстоящи събития в България";
+"events.source" = "Данни за събитията от Smoothcomp. Записването става в Smoothcomp.";
+"events.registration" = "Записване";
+"events.registration.deadline" = "Краен срок";
+"events.openSmoothcomp" = "Отвори в Smoothcomp";
+"events.addToCalendar" = "Добави в календара";
+"events.registerNote" = "Проверете страницата на събитието за категории, цени и срокове.";
+"events.calendar.added" = "Добавено в календара ви";
+"events.calendar.denied" = "Достъпът до календара е изключен. Можете да го включите от Настройки.";
+"events.calendar.failed" = "Събитието не можа да бъде добавено в календара.";
