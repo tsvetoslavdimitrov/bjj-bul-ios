@@ -6,7 +6,7 @@ For screenshots without signing in. Xcode → Product → Scheme → Edit Scheme
 - `-demoScreen <name>` (with `-demo`) — opens one screen full-screen.
 
 Screen names: `feed`, `explore`, `gymDetail`, `events`, `openMats`, `training`, `profile`, `bjjPass`, `myGym`,
-`reports`, `kiosk`, `kioskGuest`, `askBJJ`, `notifications`, `composer`, `record`.
+`reports`, `kiosk`, `kioskGuest`, `askBJJ`, `notifications`, `composer`, `record`, `marketplace`, `partnerDashboard`.
 
 Without `-demoScreen` the normal tab bar opens with demo data. All demo data is fictional sample data
 (gradient/SF Symbol images, no real people). Code: `BJJBul/Demo/` (all under `#if DEBUG`).

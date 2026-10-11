@@ -38,6 +38,8 @@ struct DemoRouter: View {
         case "reports": ReportsView(myGym: DemoData.myGym)
         case "askBJJ": AskBJJView(initialMessages: DemoData.askBJJMessages)
         case "notifications": NotificationsView()
+        case "marketplace": MarketplaceView()
+        case "partnerDashboard": PartnerDashboardView(partner: MockMarketplaceData.partners[0])
         case "record":
             ScrollView {
                 AthleteRecordCard(userId: DemoData.ownerId, smoothcompURL: DemoData.user.smoothcompProfileURL, isMe: true)

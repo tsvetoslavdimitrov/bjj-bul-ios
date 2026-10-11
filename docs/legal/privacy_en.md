@@ -1,6 +1,6 @@
 # BJJ Bul – Privacy Policy
 
-Version 1.1 · Effective 11 October 2026
+Version 1.2 · Effective 11 October 2026
 
 ## 1. Who we are
 BJJ Bul is responsible for the personal data processed through the app. Contact: admin@bjjbul.com
@@ -32,6 +32,7 @@ We don't sell your data, and we don't use it for third-party advertising.
 - **Shared with the gym:** a drop-in request is visible to you and to the owner of that gym's page in the app (along with your display name). It's also visible to our administrators.
 - **Private to you:** your training log, followed gyms, notification preferences, notifications, push tokens and Ask BJJ conversations. Only you can see them in the app. Our administrators can access the database only for operation, security and support.
 - **Moderators only:** reports and gym submissions.
+- **Shop (marketplace):** when you send an order request, the items, your name, phone, delivery details (Econt/Speedy office or address) and notes are shared with that partner store only, which acts as an independent controller for fulfilling the order. Partners and our administrators see the order; other users don't. When you tap "Buy on the shop's website", we log the click (product, time, a random reference code and your account if signed in) to count referrals; the shop's own privacy policy applies on its site. Orders are kept for accounting (up to 5 years, as required by law); you can ask us to delete the rest.
 
 ## 5. Ask BJJ (AI chat)
 - **What's sent:** when you send a message, we send it to our AI provider together with up to 12 earlier messages from the same conversation, instructions for the assistant, and relevant public app data (for example gyms, competitions and open mats that match your question). We don't send your email, your name or your account identifier.

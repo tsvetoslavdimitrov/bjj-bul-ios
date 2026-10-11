@@ -85,6 +85,13 @@ struct ExploreView: View {
                     }
                     .accessibilityLabel(Text("contribute.addGym"))
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        MarketplaceView()
+                    } label: {
+                        Label("shop.title", systemImage: "bag")
+                    }
+                }
             }
             .sheet(isPresented: $showAddGym) {
                 AddGymView()

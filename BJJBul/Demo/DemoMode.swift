@@ -8,7 +8,8 @@ import AVFoundation
 /// `-demoScreen <name>` to open one screen directly. All data here is SAMPLE data, not real people or gyms.
 enum DemoMode {
     static let screenNames = ["feed", "explore", "gymDetail", "events", "openMats", "training", "profile", "bjjPass",
-                              "myGym", "reports", "kiosk", "kioskGuest", "askBJJ", "notifications", "composer", "record"]
+                              "myGym", "reports", "kiosk", "kioskGuest", "askBJJ", "notifications", "composer", "record",
+                              "marketplace", "partnerDashboard"]
 
     static var isOn: Bool { ProcessInfo.processInfo.arguments.contains("-demo") }
 
@@ -182,6 +183,23 @@ enum DemoData {
                       text: "(Примерен отговор) Да – в събота от 11:00 в Жиу-жицу Академия София (примерни данни). Провери раздел Events → Open mats за точния час.",
                       createdAt: Date().addingTimeInterval(-110)),
     ]
+
+    /// SAMPLE marketplace products with gradient/SF Symbol images (fictional stores, no real brands).
+    static var marketplaceProducts: [Product] {
+        var images: [ProductCategory: URL] = [:]
+        let palettes: [ProductCategory: [UIColor]] = [
+            .gi: [.systemIndigo, .systemBlue], .rashguard: [.systemRed, .systemOrange],
+            .shorts: [.darkGray, .black], .belts: [.systemBrown, .black],
+            .gear: [.systemTeal, .systemGreen], .supplements: [.systemYellow, .systemOrange],
+            .apparel: [.systemPink, .systemPurple],
+        ]
+        for (category, colors) in palettes {
+            if let url = DemoMedia.image("product-\(category.rawValue)", colors: colors, symbol: category.symbol) {
+                images[category] = url
+            }
+        }
+        return MockMarketplaceData.products(images: images)
+    }
 
     static var myGym: MyGym {
         MyGym(gymId: MockData.gym1Id, name: MockData.gyms[0].name, slug: "sample-gym", role: .owner,
@@ -409,7 +427,8 @@ extension AppServices {
         athletes: DemoAthleteService(),
         gymManagement: MockGymManagementService(),
         kiosk: MockKioskService(),
-        reports: MockReportsService()
+        reports: MockReportsService(),
+        marketplace: MockMarketplaceService(products: DemoData.marketplaceProducts, sampleOrders: true)
     )
 }
 #endif

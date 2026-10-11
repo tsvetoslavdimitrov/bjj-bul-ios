@@ -74,6 +74,21 @@ struct ProfileView: View {
                 } label: {
                     Label("mypay.title", systemImage: "ticket")
                 }
+                NavigationLink {
+                    MarketplaceView()
+                } label: {
+                    Label("shop.title", systemImage: "bag")
+                }
+                NavigationLink {
+                    MyOrdersView()
+                } label: {
+                    Label("shop.myOrders", systemImage: "shippingbox")
+                }
+                NavigationLink {
+                    MyPartnerStoresView()
+                } label: {
+                    Label("partner.myStore", systemImage: "storefront")
+                }
             }
 
             Section {

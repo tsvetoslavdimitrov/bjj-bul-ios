@@ -193,3 +193,23 @@ protocol ReportsService {
     func visitsList(gymId: UUID, from: Date, to: Date) async throws -> [VisitListRow]
     func paymentsList(gymId: UUID, from: Date, to: Date) async throws -> [PaymentListRow]
 }
+
+protocol MarketplaceService {
+    func products(category: ProductCategory?, search: String) async throws -> [Product]
+    func products(partnerId: UUID) async throws -> [Product]
+    func partner(id: UUID) async throws -> Partner?
+    /// Logs the click and returns the tracked URL (?ref=bjjbul-<code>&utm_…).
+    func trackAffiliateClick(productId: UUID) async throws -> URL
+    func placeOrder(partnerId: UUID, items: [CartItem], draft: CheckoutDraft) async throws -> MarketplaceOrder
+    func myOrders() async throws -> [MarketplaceOrder]
+    func cancelOrder(id: UUID) async throws
+    // Partner side
+    func applyAsPartner(_ application: PartnerApplication) async throws
+    func myPartners() async throws -> [Partner]
+    func saveProduct(_ product: Product) async throws
+    func deleteProduct(id: UUID) async throws
+    func uploadProductImage(partnerId: UUID, jpegData: Data) async throws -> URL
+    func partnerOrders(partnerId: UUID) async throws -> [MarketplaceOrder]
+    func setOrderStatus(orderId: UUID, status: OrderStatus) async throws
+    func ledger(partnerId: UUID) async throws -> [LedgerMonth]
+}
